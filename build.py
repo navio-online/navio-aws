@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import subprocess, re, os
+import subprocess, re, os, sys
 from navio.builder import task
 import sh
 
@@ -16,12 +16,12 @@ def test(*args):
   """
   Run unit tests.
   """
-  # subprocess.call(["py.test"] + list(args))
-  print('No test implemented')
+  pyTest = sh.Command("py.test")
+  pyTest(args, _out=sys.stdout, _err=sys.stderr)
 
 @task()
 def check_uncommited():
-  result = subprocess.check_output(['git', 'status', '--porcelain'])
+  result = sh.git('status', '--porcelain')
   if result:
     raise Exception('There are uncommited files')
 
