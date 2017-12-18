@@ -7,6 +7,7 @@ setup(
     author_email="peter@navio.tech",
     url=navio.aws.__website__,
     packages=["navio", "navio.aws", "navio.aws.services"],
+    install_requires=['boto3'],
     license="MIT License",
     classifiers=[
         'Development Status :: 4 - Beta',
