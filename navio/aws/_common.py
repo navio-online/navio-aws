@@ -125,7 +125,7 @@ def _pyntexit_register():
 
 def _pyntexit():
   import datetime
-  print 'Script exited at {}'.format(datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S"))
+  print('Script exited at {}'.format(datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")))
   import platform
   if platform.system() == 'Darwin':
     execute('osascript', '-e', 'display notification "Script finished" with title "Pynt"')

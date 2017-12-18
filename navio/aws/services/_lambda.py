@@ -40,14 +40,14 @@ class AWSLambda(AWSSession):
     files = ls('./src/main/python', '*.py')
 
     if not which('pylint'):
-      print 'pylint command not found, skipping code validation via PyLint'
+      print('pylint command not found, skipping code validation via PyLint')
       return True
 
     if len(files) == 0:
-      print "No python files for validation"
+      print("No python files for validation")
       return True
     else:
-      print "Validating files via pylint: %s" % files
+      print("Validating files via pylint: %s" % files)
 
     for filename in files:
       try:
@@ -56,29 +56,29 @@ class AWSLambda(AWSSession):
         errors.append(filename)
 
     if len(errors) > 0:
-      print "There are errors in python files: %s" % errors
+      print("There are errors in python files: %s" % errors)
       raise Exception("Lambda validation error. Check output for details.")
 
     return True
 
   def package(self):
-    print '[ Packaging lambda deployment package ]'
+    print('[ Packaging lambda deployment package ]')
     shutil.rmtree('target/distrib/', ignore_errors = True)
 
     files = ls('src/main/python/', '*.py')
     cwd = os.getcwd()
-    print '[ Files ]'
+    print('[ Files ]')
     for name in files:
-      print name[len(cwd)+1:]
+      print(name[len(cwd)+1:])
 
     shutil.copytree('src/main/python/', 'target/distrib/', ignore = shutil.ignore_patterns('*.pyc', 'tmp*'))
 
     self.install_deps(['--target', 'target/distrib/'])
     # for req in self.pip_requirements:
-    #   print 'Installing {}'.format(req)
+    #   print('Installing {}'.format(req))
     #   execute('pip', 'install', '--upgrade', '--target', 'target/distrib/', req)
     # else:
-    #   print "Your lambda doesn't have any pip dependencies"
+    #   print("Your lambda doesn't have any pip dependencies")
 
     
     zipf = zipfile.ZipFile('target/{}'.format(self.s3_filename), 'w', zipfile.ZIP_DEFLATED)
@@ -91,8 +91,8 @@ class AWSLambda(AWSSession):
     return True
 
   def install_deps(self, pip_args = None):
-    print '[ Installing lambda dependencies ]'
-    print '[ Dependencies ]'
+    print('[ Installing lambda dependencies ]')
+    print('[ Dependencies ]')
 
     args = ['install', '--upgrade']
     
@@ -108,16 +108,16 @@ class AWSLambda(AWSSession):
           args.append(pip_arg)
 
     for req in self.pip_requirements:
-      print 'Installing {}'.format(req)
+      print('Installing {}'.format(req))
       execute('pip', args, req)
     
     if not self.pip_requirements or len(self.pip_requirements) == 0:
-      print "Your lambda doesn't have any pip dependencies"
+      print("Your lambda doesn't have any pip dependencies")
 
   def upload(self):
     s3 = self.session.client('s3')
     lambda_package = os.path.normpath(os.path.join(os.getcwd(), 'target/', self.s3_filename))
-    print "Uploading %s to temporary location s3://%s/%s" % (lambda_package, self.s3_bucket, self.s3_key)
+    print("Uploading %s to temporary location s3://%s/%s" % (lambda_package, self.s3_bucket, self.s3_key))
     S3Transfer(s3).upload_file(
         lambda_package,
         self.s3_bucket,
@@ -131,7 +131,7 @@ class AWSLambda(AWSSession):
       function_name = kwargs['function_name']
     else:
       function_name = self.function_name
-    print "Updating function {} code from s3://{}/{}".format(function_name, self.s3_bucket, self.s3_key)    
+    print("Updating function {} code from s3://{}/{}".format(function_name, self.s3_bucket, self.s3_key)    )
     resp = lambdas.update_function_code(
         FunctionName = function_name,
         S3Bucket = self.s3_bucket,
@@ -141,7 +141,7 @@ class AWSLambda(AWSSession):
 
   def update_dev_alias(self):
     lambdas = self.session.client('lambda')
-    print 'Updating function {} DEV alias to version $LATEST'.format(self.function_name)
+    print('Updating function {} DEV alias to version $LATEST'.format(self.function_name))
     lambdas.update_alias(
         FunctionName = self.function_name,
         FunctionVersion = '$LATEST',
@@ -157,7 +157,7 @@ class AWSLambda(AWSSession):
         FunctionName = self.function_name,
       )
 
-    print 'Updating function {} PROD alias to version {}'.format(self.function_name, resp['Version'])
+    print('Updating function {} PROD alias to version {}'.format(self.function_name, resp['Version']))
     lambdas.update_alias(
         FunctionName = self.function_name,
         FunctionVersion = resp['Version'],

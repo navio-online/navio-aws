@@ -149,12 +149,12 @@ class AWSCloudFormation(AWSSession):
         err_code = err.response['Error']['Code']        
         if err_msg != "Stack with id {} does not exist".format(self.stack_name) and err_code != 'ValidationError':
           if no_fail:
-            print "Stack with id {} does not exist".format(self.stack_name)
+            print("Stack with id {} does not exist".format(self.stack_name))
           else:
             raise Exception, "Stack with id {} does not exist".format(self.stack_name), sys.exc_info()[2]
 
 
-    print "Can't find output parameter %s in stack %s under %s profile" % (output_key, self.stack_name, self.profile_name)
+    print("Can't find output parameter %s in stack %s under %s profile" % (output_key, self.stack_name, self.profile_name))
     return None
     
 
@@ -163,13 +163,13 @@ class AWSCloudFormation(AWSSession):
     for template in ([self.template] + self.includes):
       
       if template in __builtin__.validated_templates:
-        print 'Template {} has been validated already'.format(template)
+        print('Template {} has been validated already'.format(template))
         continue
       else:
         __builtin__.validated_templates.append(template)
 
       temp_filename = "temp/%s-%s" % (uuid.uuid4(), os.path.basename(template))
-      print "Uploading %s to temporary location s3://%s/%s" % (template, self.s3_bucket, temp_filename)
+      print("Uploading %s to temporary location s3://%s/%s" % (template, self.s3_bucket, temp_filename))
       S3Transfer(s3).upload_file(
           template,
           self.s3_bucket, 
@@ -178,15 +178,15 @@ class AWSCloudFormation(AWSSession):
         )
 
       template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, temp_filename)
-      print "Validating template %s" % template_url
+      print("Validating template %s" % template_url)
       resp = self.session.client('cloudformation').validate_template(
         TemplateURL = template_url
       )
 
       if details:
-        print 'Template {} details: {}'.format(template, json.dumps(resp, indent=2, separators=(',', ': ')))
+        print('Template {} details: {}'.format(template, json.dumps(resp, indent=2, separators=(',', ': '))))
 
-      print "Removing temporary file /%s from s3" % temp_filename
+      print("Removing temporary file /%s from s3" % temp_filename)
       s3.delete_object(        
         Bucket = self.s3_bucket,
         Key = temp_filename,
@@ -202,7 +202,7 @@ class AWSCloudFormation(AWSSession):
       stack_name = kwargs.get('stack_name')
 
     template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, self.s3_key)
-    print "Creating stack {}".format(stack_name)
+    print("Creating stack {}".format(stack_name))
     resp = cloudformation.create_stack(
         StackName = stack_name,
         TemplateURL = template_url,
@@ -228,7 +228,7 @@ class AWSCloudFormation(AWSSession):
       stack_name = kwargs.get('stack_name')
 
     template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, self.s3_key)
-    print "Updating stack {}".format(stack_name)
+    print("Updating stack {}".format(stack_name))
     resp = cloudformation.update_stack(
         StackName = stack_name,
         TemplateURL = template_url,
@@ -268,7 +268,7 @@ class AWSCloudFormation(AWSSession):
     if 'stack_name' in kwargs:
       stack_name = kwargs.get('stack_name')
 
-    print 'Waiting stack {} status complete'.format(stack_name)
+    print('Waiting stack {} status complete'.format(stack_name))
     waiter = cloudformation.get_waiter('stack_create_complete')
     waiter.wait(
       StackName = stack_name
@@ -283,7 +283,7 @@ class AWSCloudFormation(AWSSession):
     if 'stack_name' in kwargs:
       stack_name = kwargs.get('stack_name')
 
-    print 'Waiting stack {} status updated'.format(stack_name)
+    print('Waiting stack {} status updated'.format(stack_name))
     waiter = cloudformation.get_waiter('stack_update_complete')
     waiter.wait(
       StackName = stack_name
@@ -298,7 +298,7 @@ class AWSCloudFormation(AWSSession):
     if 'stack_name' in kwargs:
       stack_name = kwargs.get('stack_name')
 
-    print 'Waiting stack {} status deleted'.format(stack_name)
+    print('Waiting stack {} status deleted'.format(stack_name))
     waiter = cloudformation.get_waiter('stack_delete_complete')
     waiter.wait(
       StackName = stack_name
@@ -316,19 +316,19 @@ class AWSCloudFormation(AWSSession):
       stack_name = kwargs.get('stack_name')
 
     template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, self.s3_key)
-    print "Estimating template s3://{}/{}".format(self.s3_bucket, self.s3_key)
+    print("Estimating template s3://{}/{}".format(self.s3_bucket, self.s3_key))
     resp = cloudformation.estimate_template_cost(
         TemplateURL = template_url,
         Parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
       )
 
-    print 'Check URL to see your template costs estimateion:\n{}'.format(resp['Url'])
+    print('Check URL to see your template costs estimateion:\n{}'.format(resp['Url']))
 
     return
 
 
   def _upload(self):
-    print "Uploading %s to s3://%s/%s" % (self.template, self.s3_bucket, self.s3_key)
+    print("Uploading %s to s3://%s/%s" % (self.template, self.s3_bucket, self.s3_key))
     S3Transfer(self.session.client('s3')).upload_file(
         self.template, 
         self.s3_bucket, 
@@ -343,7 +343,7 @@ class AWSCloudFormation(AWSSession):
     for file in (self.includes + self.resources):
       file_s3_key = '{}{}'.format(s3_key, os.path.basename(file))
   
-      print "Uploading %s to s3://%s/%s" % (file, self.s3_bucket, file_s3_key)
+      print("Uploading %s to s3://%s/%s" % (file, self.s3_bucket, file_s3_key))
       S3Transfer(self.session.client('s3')).upload_file(
           file, 
           self.s3_bucket, 

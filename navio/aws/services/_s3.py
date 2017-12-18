@@ -53,7 +53,7 @@ class AWSS3(AWSSession):
 
         for future in futures.as_completed(futures_results):
           if future.exception() is not None:
-            print 'Error/Warning: file={}, error={}'.format(futures_results[future], future.exception())
+            print('Error/Warning: file={}, error={}'.format(futures_results[future], future.exception()))
 
       for filename in files:
         content_type, content_encoding = self._get_content_type(filename)
@@ -62,7 +62,7 @@ class AWSS3(AWSSession):
 
         result['updated_files'].append(filename[1:])
 
-        # print 'gmeta:{}'.format(metadata_full_obj)
+        # print('gmeta:{}'.format(metadata_full_obj))
 
         if 'Cache-Control' in metadata_full_obj['metadata']:
           http_metadata['Cache-Control'] = metadata_full_obj['metadata'].pop('Cache-Control', None)
@@ -93,26 +93,26 @@ class AWSS3(AWSSession):
 
         for future in futures.as_completed(futures_results):
           if future.exception() is not None:
-            print 'Error/Warning: file={}, error={}'.format(futures_results[future], future.exception())
+            print('Error/Warning: file={}, error={}'.format(futures_results[future], future.exception()))
 
     return result
     # if errors:
     #   for error in errors:
-    #     print "Warning: file {} copy error: {}".format(error['filename'], error['error'])
+    #     print("Warning: file {} copy error: {}".format(error['filename'], error['error']))
 
   def _delete_file(self, s3api, params):
     try:
-      print 'Removing: s3://{}/{}'.format(params['s3_bucket'], params['s3_key'])
+      print('Removing: s3://{}/{}'.format(params['s3_bucket'], params['s3_key']))
       s3api.delete_object(
               Bucket = params['s3_bucket'],
               Key = params['s3_key'],
         )
     except Exception as e:
-      print "Warning: file {} delete error: ({}){}".format(params['filename'], type(e), str(e))
+      print("Warning: file {} delete error: ({}){}".format(params['filename'], type(e), str(e)))
 
   def _upload_file(self, s3api, metadata):
     with open(metadata['filename'], 'r') as file:
-      print 'Uploading:: {} {} -> s3://{}/{}'.format(metadata['pattern'], metadata['filename'], metadata['s3_bucket'], metadata['s3_key'])
+      print('Uploading:: {} {} -> s3://{}/{}'.format(metadata['pattern'], metadata['filename'], metadata['s3_bucket'], metadata['s3_key']))
       try:
         if 'Cache-Control' in metadata['http-metadata']:
           s3api.put_object(
@@ -157,7 +157,7 @@ class AWSS3(AWSSession):
         #   ContentLength = os.path.getsize(metadata['filename'])
         # )
       except Exception as e:
-        print "Warning: file {} copy error: ({}){}".format(metadata['filename'], type(e), str(e))
+        print("Warning: file {} copy error: ({}){}".format(metadata['filename'], type(e), str(e)))
         # errors.append({'filename': metadata['filename'], 'error': str(e)})            
 
 
