@@ -1,11 +1,15 @@
 import boto3, botocore
 import os, shutil, zipfile
 from boto3.s3.transfer import S3Transfer
-from urlparse import urlparse
 from navio.aws.services._session import AWSSession
 from navio.aws._common import execute, ls, which
 from subprocess import check_call, CalledProcessError
 from datetime import datetime
+
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 class AWSLambda(AWSSession):
 

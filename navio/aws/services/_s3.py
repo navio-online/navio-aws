@@ -1,10 +1,14 @@
 import boto3, botocore
 import os, uuid, fnmatch, re
 import sh, mimetypes, copy
-from urlparse import urlparse
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from concurrent import futures
+
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 class AWSS3(AWSSession):
 
