@@ -1,14 +1,14 @@
 from setuptools import setup
 import navio.aws
 setup(
-    name="navio-aws",
+    name='navio-aws',
     version=navio.aws.__version__,
-    author="Peter Salnikov",
-    author_email="peter@navio.tech",
+    author='Peter Salnikov',
+    author_email='peter@navio.tech',
     url=navio.aws.__website__,
-    packages=["navio", "navio.aws", "navio.aws.services"],
+    packages=['navio', 'navio.aws', 'navio.aws.services'],
     install_requires=['boto3'],
-    license="MIT License",
+    license='MIT License',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
@@ -19,6 +19,6 @@ setup(
         'Programming Language :: Python :: 3'
     ],
     keywords=['framework'],
-    description="Amazon AWS boto3 helper libs.",
-    long_description=open("README.rst").read()+"\n"+open("CHANGES.rst").read()
+    description='Amazon AWS boto3 helper libs.',
+    long_description=open('README.rst').read()+'\n'+open('CHANGES.rst').read()
 )
