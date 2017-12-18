@@ -125,11 +125,15 @@ class AWSLambda(AWSSession):
         extra_args={'ACL': 'bucket-owner-full-control'}
       )
 
-  def update_code(self):
+  def update_code(self, **kwargs):
     lambdas = self.session.client('lambda')
-    print "Updating function {} code from s3://{}/{}".format(self.function_name, self.s3_bucket, self.s3_key)
+    if kwargs and 'function_name' in kwargs:
+      function_name = kwargs['function_name']
+    else:
+      function_name = self.function_name
+    print "Updating function {} code from s3://{}/{}".format(function_name, self.s3_bucket, self.s3_key)    
     resp = lambdas.update_function_code(
-        FunctionName = self.function_name,
+        FunctionName = function_name,
         S3Bucket = self.s3_bucket,
         S3Key = self.s3_key,
         Publish = False
@@ -162,10 +166,14 @@ class AWSLambda(AWSSession):
       )
     
 
-  def test_local(self, event = {}):
+  def test_local(self, event = {}, **kwargs):
     lambdas = self.session.client('lambda')
+    if kwargs and 'function_name' in kwargs:
+      function_name = kwargs['function_name']
+    else:
+      function_name = self.function_name
     resp = lambdas.get_function(
-      FunctionName = self.function_name
+        FunctionName = function_name
       )
 
     sep = resp['Configuration']['Handler'].rfind('.')

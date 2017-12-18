@@ -261,6 +261,51 @@ class AWSCloudFormation(AWSSession):
 
     return
 
+  def wait_complete(self, **kwargs):
+    cloudformation = self.session.client('cloudformation')
+
+    stack_name = self.stack_name
+    if 'stack_name' in kwargs:
+      stack_name = kwargs.get('stack_name')
+
+    print 'Waiting stack {} status complete'.format(stack_name)
+    waiter = cloudformation.get_waiter('stack_create_complete')
+    waiter.wait(
+      StackName = stack_name
+    )
+
+    return
+
+  def wait_update(self, **kwargs):
+    cloudformation = self.session.client('cloudformation')
+
+    stack_name = self.stack_name
+    if 'stack_name' in kwargs:
+      stack_name = kwargs.get('stack_name')
+
+    print 'Waiting stack {} status updated'.format(stack_name)
+    waiter = cloudformation.get_waiter('stack_update_complete')
+    waiter.wait(
+      StackName = stack_name
+    )
+
+    return
+
+  def wait_delete(self, **kwargs):
+    cloudformation = self.session.client('cloudformation')
+
+    stack_name = self.stack_name
+    if 'stack_name' in kwargs:
+      stack_name = kwargs.get('stack_name')
+
+    print 'Waiting stack {} status deleted'.format(stack_name)
+    waiter = cloudformation.get_waiter('stack_delete_complete')
+    waiter.wait(
+      StackName = stack_name
+    )
+
+    return
+
   def estimate_cost(self, **kwargs):
     self._upload()
 
