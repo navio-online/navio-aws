@@ -2,7 +2,7 @@ import boto3, botocore
 import os, uuid, json, sys
 from urlparse import urlparse
 from boto3.s3.transfer import S3Transfer
-from pyntaws.services._session import AWSSession
+from navio.aws.services._session import AWSSession
 
 import __builtin__
 

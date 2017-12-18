@@ -1,8 +1,8 @@
 import boto3, botocore
 import os, uuid
 from botocore.exceptions import ClientError
-from pyntaws.services._session import AWSSession
-from pyntaws._common import generatePassword
+from navio.aws.services._session import AWSSession
+from navio.aws._common import generatePassword
 
 
 import __builtin__

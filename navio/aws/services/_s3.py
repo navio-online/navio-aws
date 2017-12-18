@@ -3,7 +3,7 @@ import os, uuid, fnmatch, re
 import sh, mimetypes, copy
 from urlparse import urlparse
 from boto3.s3.transfer import S3Transfer
-from pyntaws.services._session import AWSSession
+from navio.aws.services._session import AWSSession
 from concurrent import futures
 
 import __builtin__
