@@ -6,13 +6,10 @@ from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from concurrent import futures
 
-import __builtin__
-
 class AWSS3(AWSSession):
 
   def __init__(self, **kwargs):
     super(self.__class__, self).__init__(kwargs['profile_name'])
-    __builtin__.aws_s3 = self
 
   def sync(self, **kwargs):
     if 'metadata' in kwargs:

@@ -3,10 +3,9 @@ import os, uuid, json, sys
 from urlparse import urlparse
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
+from navio.aws import shared
 
-import __builtin__
-
-__builtin__.validated_templates = list()
+shared.store('validated_templates') = list()
 
 class AWSCloudFormation(AWSSession):
 
@@ -77,8 +76,6 @@ class AWSCloudFormation(AWSSession):
 
       if self.s3_key.startswith('/'):
         self.s3_key = self.s3_key[1:]
-
-      __builtin__.aws_cloudformation = self
 
   # @property
   # def s3_uri(self):
@@ -162,11 +159,11 @@ class AWSCloudFormation(AWSSession):
     s3 = self.session.client('s3')
     for template in ([self.template] + self.includes):
       
-      if template in __builtin__.validated_templates:
+      if template in shared.store('validated_templates'):
         print('Template {} has been validated already'.format(template))
         continue
       else:
-        __builtin__.validated_templates.append(template)
+        shared.store('validated_templates').append(template)
 
       temp_filename = "temp/%s-%s" % (uuid.uuid4(), os.path.basename(template))
       print("Uploading %s to temporary location s3://%s/%s" % (template, self.s3_bucket, temp_filename))

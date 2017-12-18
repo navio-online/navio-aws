@@ -5,13 +5,10 @@ from navio.aws.services._session import AWSSession
 from navio.aws._common import generatePassword
 
 
-import __builtin__
-
 class AWSIAM(AWSSession):
 
   def __init__(self, **kwargs):
     super(self.__class__, self).__init__(kwargs['profile_name'])
-    __builtin__.aws_iam = self
 
   def create_access_key(self, **kwargs):
     resp = self.session.client('iam').create_access_key(

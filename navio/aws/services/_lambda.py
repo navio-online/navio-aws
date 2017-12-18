@@ -6,7 +6,6 @@ from navio.aws.services._session import AWSSession
 from navio.aws._common import execute, ls, which
 from subprocess import check_call, CalledProcessError
 from datetime import datetime
-import __builtin__
 
 class AWSLambda(AWSSession):
 
@@ -31,8 +30,6 @@ class AWSLambda(AWSSession):
 
     if self.s3_key.startswith('/'):
       self.s3_key = self.s3_key[1:]
-
-    __builtin__.aws_lambda = self
 
   def validate(self):
     self.install_deps(['--user'])
