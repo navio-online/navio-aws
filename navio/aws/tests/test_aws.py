@@ -4,7 +4,7 @@ import sys
     
 class TestAWS:
     def test_import(self):
-        from navio.aws import *
+        import navio.aws
 
 class TestAWSCloudFormation:
     def test_import(self):
