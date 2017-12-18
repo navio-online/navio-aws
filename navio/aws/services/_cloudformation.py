@@ -5,7 +5,7 @@ from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws import shared
 
-shared.store('validated_templates') = list()
+shared.store['validated_templates'] = list()
 
 class AWSCloudFormation(AWSSession):
 

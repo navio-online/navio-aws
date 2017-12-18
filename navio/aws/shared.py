@@ -1,1 +1,1 @@
-aws_session = None
+store = dict()
