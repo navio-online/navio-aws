@@ -1,5 +1,4 @@
 from setuptools import setup
-import navio.aws
 setup(
     name='navio-aws',
     version=navio.aws.__version__,
