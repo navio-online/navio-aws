@@ -1,10 +1,14 @@
 import boto3, botocore
 import os, uuid, json, sys
-from urlparse import urlparse
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws import shared
 
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
+    
 shared.store['validated_templates'] = list()
 
 class AWSCloudFormation(AWSSession):
