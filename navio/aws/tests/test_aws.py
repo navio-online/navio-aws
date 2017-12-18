@@ -6,6 +6,10 @@ class TestAWS:
     def test_import(self):
         import navio.aws
 
+class TestAWSSession:
+    def test_import(self):
+        from navio.aws import AWSSession
+
 class TestAWSCloudFormation:
     def test_import(self):
         from navio.aws import AWSCloudFormation
