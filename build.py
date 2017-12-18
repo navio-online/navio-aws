@@ -12,6 +12,11 @@ def apidoc():
   sh.epydoc('--config','epydoc.config', _out=sys.stdout, _err=sys.stderr)
     
 @task()
+def build():
+  sh.python('setup.py', 'build', _out=sys.stdout, _err=sys.stderr)
+
+
+@task(build)
 def test(*args):
   """
   Run unit tests.
