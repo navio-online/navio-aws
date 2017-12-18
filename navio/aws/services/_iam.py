@@ -59,11 +59,11 @@ class AWSIAM(AWSSession):
       )
 
     if 'print_password' in kwargs and bool(kwargs['print_password']):
-      print """
-Signin URL: https://{}.signin.aws.amazon.com/console
-Username: {}
-Password: {}
-""".format(account_alias, kwargs.get('username'), password)
+      print (
+        'Signin URL: https://{}.signin.aws.amazon.com/console'.format(account_alias),
+        'Username: {}'.format(kwargs.get('username')),
+        'Password: {}'.format(password)
+      )
     else:
       return password      
 
