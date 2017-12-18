@@ -1,12 +1,12 @@
 from setuptools import setup
-import navio.builder
+import navio.aws
 setup(
     name="navio-aws",
     version=navio.aws.__version__,
     author="Peter Salnikov",
     author_email="peter@navio.tech",
     url=navio.aws.__website__,
-    packages=["navio", "navio.aws"],
+    packages=["navio", "navio.aws", "navio.aws.services"],
     license="MIT License",
     classifiers=[
         'Development Status :: 4 - Beta',

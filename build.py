@@ -16,7 +16,7 @@ def test(*args):
   Run unit tests.
   """
   # subprocess.call(["py.test"] + list(args))
-  print 'No test implemented'
+  print('No test implemented')
 
 @task()
 def check_uncommited():
