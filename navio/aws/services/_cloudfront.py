@@ -2,7 +2,6 @@ import boto3, botocore
 import os, uuid, fnmatch, re
 import sh, mimetypes, copy
 import uuid
-from urlparse import urlparse
 from navio.aws.services._session import AWSSession
 from concurrent import futures
 
