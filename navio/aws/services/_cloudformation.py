@@ -148,7 +148,7 @@ class AWSCloudFormation(AWSSession):
           if no_fail:
             print("Stack with id {} does not exist".format(self.stack_name))
           else:
-            raise Exception, "Stack with id {} does not exist".format(self.stack_name), sys.exc_info()[2]
+            raise Exception("Stack with id {} does not exist".format(self.stack_name), sys.exc_info()[2])
 
 
     print("Can't find output parameter %s in stack %s under %s profile" % (output_key, self.stack_name, self.profile_name))
