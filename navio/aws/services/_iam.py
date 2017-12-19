@@ -18,8 +18,8 @@ class AWSIAM(AWSSession):
     if 'print_credentials' in kwargs and bool(kwargs['print_credentials']):
       print(
         '[{}.ci]'.format(self.profile_name),
-        'aws_access_key_id = {}'.format(resp['AccessKeyId']),
-        'aws_secret_access_key = {}'.format(resp['SecretAccessKey'])
+        'aws_access_key_id = {}'.format(resp['AccessKey']['AccessKeyId']),
+        'aws_secret_access_key = {}'.format(resp['AccessKey']['SecretAccessKey'])
       )
     else:
       return resp['AccessKey']
