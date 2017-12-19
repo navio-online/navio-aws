@@ -1,5 +1,6 @@
 import boto3, botocore
 import os, uuid
+import textwrap
 from botocore.exceptions import ClientError
 from navio.aws.services._session import AWSSession
 from navio.aws._common import generatePassword
@@ -16,10 +17,14 @@ class AWSIAM(AWSSession):
     )
 
     if 'print_credentials' in kwargs and bool(kwargs['print_credentials']):
-      print(
-        "[{}.ci]\n".format(self.profile_name)
-        "aws_access_key_id = {}\n".format(resp['AccessKey']['AccessKeyId'])
-        "aws_secret_access_key = {}\n".format(resp['AccessKey']['SecretAccessKey'])
+      print(textwrap.dedent('''
+        [{profile_name}.ci]
+        aws_access_key_id = {key_id}
+        aws_secret_access_key = {key_secret}
+        '''.format(
+            profile_name = self.profile_name, 
+            key_id = resp['AccessKey']['AccessKeyId'], 
+            key_secret = resp['AccessKey']['SecretAccessKey']))
       )
     else:
       return resp['AccessKey']
