@@ -24,8 +24,9 @@ class AWSIAM(AWSSession):
         '''.format(
             profile_name = self.profile_name, 
             key_id = resp['AccessKey']['AccessKeyId'], 
-            key_secret = resp['AccessKey']['SecretAccessKey']))
-      )
+            key_secret = resp['AccessKey']['SecretAccessKey']
+          )
+      ))
     else:
       return resp['AccessKey']
 
@@ -61,11 +62,16 @@ class AWSIAM(AWSSession):
       )
 
     if 'print_password' in kwargs and bool(kwargs['print_password']):
-      print(
-        "Signin URL: https://{}.signin.aws.amazon.com/console\n".format(account_alias)
-        'Username: {}\n'.format(kwargs.get('username'))
-        'Password: {}\n'.format(password)
-      )
+      print(textwrap.dedent('''
+        Signin URL: https://{alias}.signin.aws.amazon.com/console
+        Username: {username}
+        Password: {password}
+        '''.format(
+            alias = account_alias, 
+            username = kwargs.get('username'), 
+            password = password
+          )
+      ))
     else:
       return password      
 
