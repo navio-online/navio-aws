@@ -6,9 +6,9 @@ from navio.aws.services._session import AWSSession
 from concurrent import futures
 
 try:
-    import urlparse
+  from urlparse import urlparse
 except ImportError:
-    import urllib.parse as urlparse
+  from urllib.parse import urlparse
 
 class AWSS3(AWSSession):
 

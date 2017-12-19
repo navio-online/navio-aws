@@ -7,9 +7,9 @@ from subprocess import check_call, CalledProcessError
 from datetime import datetime
 
 try:
-    import urlparse
+  from urlparse import urlparse
 except ImportError:
-    import urllib.parse as urlparse
+  from urllib.parse import urlparse
 
 class AWSLambda(AWSSession):
 

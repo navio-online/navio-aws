@@ -5,9 +5,9 @@ from navio.aws.services._session import AWSSession
 from navio.aws import shared
 
 try:
-    import urlparse
+  from urlparse import urlparse
 except ImportError:
-    import urllib.parse as urlparse
+  from urllib.parse import urlparse
     
 shared.store['validated_templates'] = list()
 
