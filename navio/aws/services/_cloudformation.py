@@ -163,11 +163,11 @@ class AWSCloudFormation(AWSSession):
     s3 = self.session.client('s3')
     for template in ([self.template] + self.includes):
       
-      if template in shared.store('validated_templates'):
+      if template in shared.store['validated_templates']:
         print('Template {} has been validated already'.format(template))
         continue
       else:
-        shared.store('validated_templates').append(template)
+        shared.store['validated_templates'].append(template)
 
       temp_filename = "temp/%s-%s" % (uuid.uuid4(), os.path.basename(template))
       print("Uploading %s to temporary location s3://%s/%s" % (template, self.s3_bucket, temp_filename))
