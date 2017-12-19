@@ -17,9 +17,9 @@ class AWSIAM(AWSSession):
 
     if 'print_credentials' in kwargs and bool(kwargs['print_credentials']):
       print(
-        '[{}.ci]'.format(self.profile_name),
-        'aws_access_key_id = {}'.format(resp['AccessKey']['AccessKeyId']),
-        'aws_secret_access_key = {}'.format(resp['AccessKey']['SecretAccessKey'])
+        '[{}.ci]\n'.format(self.profile_name)
+        'aws_access_key_id = {}\n'.format(resp['AccessKey']['AccessKeyId'])
+        'aws_secret_access_key = {}\n'.format(resp['AccessKey']['SecretAccessKey'])
       )
     else:
       return resp['AccessKey']
@@ -57,9 +57,9 @@ class AWSIAM(AWSSession):
 
     if 'print_password' in kwargs and bool(kwargs['print_password']):
       print(
-        'Signin URL: https://{}.signin.aws.amazon.com/console'.format(account_alias),
-        'Username: {}'.format(kwargs.get('username')),
-        'Password: {}'.format(password)
+        'Signin URL: https://{}.signin.aws.amazon.com/console\n'.format(account_alias)
+        'Username: {}\n'.format(kwargs.get('username'))
+        'Password: {}\n'.format(password)
       )
     else:
       return password      
