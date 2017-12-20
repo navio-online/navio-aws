@@ -1,4 +1,3 @@
 twine
 navio-builder
 sh
-boto3
