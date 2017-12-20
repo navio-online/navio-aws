@@ -2,11 +2,6 @@
 Amazon AWS boto3 helper libs
 """
 
-__version__ = "0.1.21"
-__license__ = "MIT License"
-__website__ = "https://oss.navio.tech/navio-aws/"
-__download_url__ = 'https://github.com/naviotech/navio-aws/archive/{}.tar.gz'.format(__version__),
-
 from navio.aws.services._iam import AWSIAM
 from navio.aws.services._session import AWSSession
 from navio.aws.services._cloudformation import AWSCloudFormation
