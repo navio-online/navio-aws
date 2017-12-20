@@ -40,7 +40,7 @@ def generate_rst():
 
 @task()
 def update_version(ver = None):
-  with open('navio/aws/__init__.py', 'r') as f:
+  with open('navio/meta_aws.py', 'r') as f:
     file_str = f.read()
 
   if not ver:
@@ -57,21 +57,21 @@ def update_version(ver = None):
       '__version__ = "{}"\n'.format(ver),
       file_str)
 
-  with open('navio/aws/__init__.py', 'w') as f:
+  with open('navio/meta_aws.py', 'w') as f:
     f.write(file_str)
 
-  sh.git('commit', 'navio/aws/__init__.py', '-m', 'Version updated to {}'.format(ver), _out=sys.stdout, _err=sys.stderr)
+  sh.git('commit', 'navio/meta_aws.py', '-m', 'Version updated to {}'.format(ver), _out=sys.stdout, _err=sys.stderr)
 
 @task()
 def create_tag():
-  with open('navio/aws/__init__.py', 'r') as f:
+  with open('navio/meta_aws.py', 'r') as f:
     file_str = f.read()
   regexp = re.compile('__version__\s*\=\s*\"([\d\w\.\-\_]+)\"\s*')
   m = regexp.search(file_str)
   if m:
     ver = m.group(1)
   else:
-    raise "Can't find/parse current version in './navio/aws/__init__.py'"
+    raise "Can't find/parse current version in './navio/meta_aws.py'"
 
   sh.git('tag', '-a', '-m', 'Tagging version {}'.format(ver), ver, _out=sys.stdout, _err=sys.stderr)
 
