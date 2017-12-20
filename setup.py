@@ -1,11 +1,11 @@
 from setuptools import setup
-import navio.aws_meta
+import navio.meta_aws
 setup(
     name='navio-aws',
-    version=navio.aws_meta.__version__,
+    version=navio.meta_aws.__version__,
     author='Peter Salnikov',
     author_email='peter@navio.tech',
-    url=navio.aws_meta.__website__,
+    url=navio.meta_aws.__website__,
     packages=['navio', 'navio.aws', 'navio.aws.services'],
     install_requires=['boto3'],
     license='MIT License',
