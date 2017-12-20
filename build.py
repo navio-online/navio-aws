@@ -13,8 +13,8 @@ def apidoc():
     
 @task()
 def build():
-  sh.python('setup.py', 'build', _out=sys.stdout, _err=sys.stderr)
-
+  sh.python('setup.py', 'bdist_wheel', _out=sys.stdout, _err=sys.stderr)
+  sh.pip.install('.', _out=sys.stdout, _err=sys.stderr)
 
 @task(build)
 def test(*args):
