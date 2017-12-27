@@ -1,6 +1,7 @@
 import boto3, botocore
 import os, uuid, fnmatch, re
 import sh, mimetypes, copy
+import traceback, sys
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from concurrent import futures
@@ -112,7 +113,7 @@ class AWSS3(AWSSession):
       print("Warning: file {} delete error: ({}){}".format(params['filename'], type(e), str(e)))
 
   def _upload_file(self, s3api, metadata):
-    with open(metadata['filename'], 'r') as file:
+    with open(metadata['filename'], 'rb') as file:
       print('Uploading:: {} {} -> s3://{}/{}'.format(metadata['pattern'], metadata['filename'], metadata['s3_bucket'], metadata['s3_key']))
       try:
         if 'Cache-Control' in metadata['http-metadata']:
@@ -159,6 +160,7 @@ class AWSS3(AWSSession):
         # )
       except Exception as e:
         print("Warning: file {} copy error: ({}){}".format(metadata['filename'], type(e), str(e)))
+        traceback.print_exc(file=sys.stderr)
         # errors.append({'filename': metadata['filename'], 'error': str(e)})            
 
 
