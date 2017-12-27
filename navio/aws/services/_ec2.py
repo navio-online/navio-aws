@@ -40,5 +40,5 @@ class AWSEC2(AWSSession):
         Filters = filters
       )
 
-    print json.dumps(filters, indent=2, default=json_serial)
-    print json.dumps(resp, indent=2, default=json_serial)
+    print(json.dumps(filters, indent=2, default=json_serial))
+    print(json.dumps(resp, indent=2, default=json_serial))
