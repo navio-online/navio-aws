@@ -19,7 +19,7 @@ def apidoc():
 @task()
 def build():
     nsh.python('setup.py', 'bdist_wheel')
-    nsh.pip.install('.', '--user')
+    nsh.pip.install('.')
 
 
 @task(build)
