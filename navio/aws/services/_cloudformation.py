@@ -19,7 +19,7 @@ shared.store['validated_templates'] = list()
 class AWSCloudFormation(AWSSession):
 
     def __init__(self, **kwargs):
-        super(self.__class__, self).__init__(kwargs['profile_name'])
+        super(self.__class__, self).__init__(kwargs['profile_name'], kwargs.get('region_name',None))
         self.stack_name = kwargs['stack_name']
 
         if (len(kwargs) == 2 and
