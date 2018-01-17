@@ -153,6 +153,7 @@ def _pyntexit():
         execute('osascript', '-e',
                 'display notification "Script finished" with title "Pynt"')
 
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
 
@@ -160,5 +161,6 @@ def json_serial(obj):
         return obj.isoformat()
     raise TypeError("Type %s not serializable" % type(obj))
 
+
 def dump(obj):
-  print(json.dumps(obj, indent=1, default=json_serial))
+    print(json.dumps(obj, indent=1, default=json_serial))
