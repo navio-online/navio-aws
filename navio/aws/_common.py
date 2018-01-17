@@ -4,7 +4,7 @@ import os
 import fnmatch
 import contextlib
 import random
-import sh
+import json
 from datetime import date, datetime
 
 
@@ -153,15 +153,6 @@ def _pyntexit():
         execute('osascript', '-e',
                 'display notification "Script finished" with title "Pynt"')
 
-
-def sh_out(line):
-    sys.stdout.write(line)
-
-
-def sh_err(line):
-    sys.stderr.write(line)
-
-
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
 
@@ -169,5 +160,5 @@ def json_serial(obj):
         return obj.isoformat()
     raise TypeError("Type %s not serializable" % type(obj))
 
-
-sh2 = sh(_out=sh_out, _err=sh_err)
+def dump(obj):
+  print(json.dumps(obj, indent=1, default=json_serial))
