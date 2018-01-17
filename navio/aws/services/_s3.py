@@ -27,6 +27,26 @@ class AWSS3(AWSSession):
             self
         ).__init__(kwargs['profile_name'])
 
+    def bucket_exists(self, **kwargs):
+        if 'bucket_name' not in kwargs:
+            raise Exception('Argument missing: bucket_name')
+
+        s3api = self.session.client('s3')
+
+        try:
+            s3api.head_bucket(Bucket = kwargs.get('bucket_name'))
+        except botocore.exceptions.ClientError as err:
+            err_msg = err.response['Error']['Message']
+            err_code = err.response['Error']['Code']
+            if (err_msg != ("An error occurred (403) when calling "
+                             "the HeadBucket operation: Forbidden")):
+                return False
+            else:
+                raise Exception("Error calling head_bucket: {}".format(
+                    err_msg), sys.exc_info()[2])
+        
+        return True
+
     def sync(self, **kwargs):
         if 'metadata' in kwargs:
             return self._sync_with_metadata(**kwargs)
