@@ -4,9 +4,11 @@ import os
 import uuid
 import json
 import sys
+import time
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws import shared
+from navio.aws._common import dump
 
 try:
     from urlparse import urlparse
@@ -369,6 +371,92 @@ class AWSCloudFormation(AWSSession):
         waiter.wait(
             StackName=stack_name
         )
+
+        return
+
+    def dry_run(self, **kwargs):
+        self._upload()
+
+        cloudformation = self.session.client('cloudformation')
+
+        stack_name = self.stack_name
+        if 'stack_name' in kwargs:
+            stack_name = kwargs.get('stack_name')
+
+        template_url = "https://s3.amazonaws.com/%s/%s" % (
+            self.s3_bucket, self.s3_key)
+
+        change_set_name = 'cs{ts}'.format(ts=time.strftime('%Y%m%d%H%M%S'))
+        client_token = 'token{uuid}'.format(uuid=uuid.uuid4())
+
+        print("Running dry_run for stack {}".format(stack_name))
+        change_set = cloudformation.create_change_set(
+            StackName=stack_name,
+            ChangeSetName=change_set_name,
+            ClientToken=client_token,
+            ChangeSetType='UPDATE',
+            TemplateURL=template_url,
+            Capabilities=['CAPABILITY_NAMED_IAM'],
+            Parameters=self._join_parameters(
+                self.parameters,
+                kwargs.get('parameters', None)
+            )
+        )
+        waiter = cloudformation.get_waiter('change_set_create_complete')
+        try:
+            waiter.wait(
+                StackName=stack_name,
+                ChangeSetName=change_set_name
+            )
+
+            print('Changes to be performed:')
+            next_token = None
+            while True:
+                args = {
+                  'StackName': stack_name,
+                  'ChangeSetName': change_set['Id'],
+                }
+                if next_token:
+                    args['NextToken'] = next_token
+
+                resp = cloudformation.describe_change_set(**args)
+
+                for change in resp['Changes']:
+                    print('{action}: {id} - {res_type}'.format(
+                            action=change['ResourceChange']['Action'],
+                            id=change['ResourceChange']['LogicalResourceId'],
+                            res_type=change['ResourceChange']['ResourceType'],
+                        )
+                    )
+
+                if 'NextToken' not in resp:
+                    break
+                else:
+                    next_token = resp['NextToken']
+
+        except botocore.exceptions.WaiterError as error:
+            if error.kwargs['reason'] == ('Waiter encountered a '
+               'terminal failure state'):
+                resp = cloudformation.describe_change_set(
+                    StackName=stack_name,
+                    ChangeSetName=change_set['Id'],
+                )
+                if resp['StatusReason'] == (
+                      "The submitted information "
+                      "didn't contain changes. "
+                      "Submit different information "
+                      "to create a change set."
+                      ):
+                    print("No changes.")
+                else:
+                    raise Exception("Unknown error", None, sys.exc_info()[2])
+            else:
+                raise Exception("Unknown error", None, sys.exc_info()[2])
+        finally:
+            cloudformation.delete_change_set(
+                StackName=stack_name,
+                ChangeSetName=change_set['Id']
+            )
 
         return
 
