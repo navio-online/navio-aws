@@ -18,7 +18,9 @@ def apidoc():
 
 @task()
 def validate():
-    nsh.pycodestyle('navio')
+    subprocess.call(['pycodestyle', 'navio/'])
+    # nsh.pycodestyle('navio/')
+    # pass
 
 
 @task(validate)
