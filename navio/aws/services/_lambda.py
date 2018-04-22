@@ -203,7 +203,7 @@ class AWSLambda(AWSSession):
         import sys
         import platform
         if platform.system() == 'Windows':
-            sys.path.append('src\main\python')
+            sys.path.append('src\\main\\python')
         else:
             sys.path.append('src/main/python')
 
