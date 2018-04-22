@@ -78,7 +78,7 @@ def generatePassword(**kwargs):
         xrange
     except NameError:
         xrange = range
-  
+
     _kwargs = {
         'len': 8,
         'symbols': "!@#$%^&*()_+-=[]{}",
