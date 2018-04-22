@@ -45,10 +45,10 @@ class TestAWSIAM:
         from navio.aws import AWSIAM
 
 
-class TestAWSEC2:
+# class TestAWSEC2:
 
-    def test_import(self):
-        from navio.aws import AWSEC2
+#     def test_import(self):
+#         from navio.aws import AWSEC2
         # ec2 = AWSEC2(profile_name='exrny.blue')
         # ec2.generate_ssh_config(tags=[
         #     {
