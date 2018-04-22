@@ -9,40 +9,40 @@ class TestAWS:
         import navio.aws
 
 
-class TestAWSSession:
+# class TestAWSSession:
 
-    def test_import(self):
-        from navio.aws import AWSSession
-
-
-class TestAWSCloudFormation:
-
-    def test_import(self):
-        from navio.aws import AWSCloudFormation
+#     def test_import(self):
+#         from navio.aws import AWSSession
 
 
-class TestAWSCloudFront:
+# class TestAWSCloudFormation:
 
-    def test_import(self):
-        from navio.aws import AWSCloudFront
-
-
-class TestAWSLambda:
-
-    def test_import(self):
-        from navio.aws import AWSLambda
+#     def test_import(self):
+#         from navio.aws import AWSCloudFormation
 
 
-class TestAWSS3:
+# class TestAWSCloudFront:
 
-    def test_import(self):
-        from navio.aws import AWSS3
+#     def test_import(self):
+#         from navio.aws import AWSCloudFront
 
 
-class TestAWSIAM:
+# class TestAWSLambda:
 
-    def test_import(self):
-        from navio.aws import AWSIAM
+#     def test_import(self):
+#         from navio.aws import AWSLambda
+
+
+# class TestAWSS3:
+
+#     def test_import(self):
+#         from navio.aws import AWSS3
+
+
+# class TestAWSIAM:
+
+#     def test_import(self):
+#         from navio.aws import AWSIAM
 
 
 # class TestAWSEC2:
