@@ -18,9 +18,7 @@ def apidoc():
 
 @task()
 def validate():
-    subprocess.call(['pycodestyle', 'navio/'])
-    # nsh.pycodestyle('navio/')
-    # pass
+    nsh.pycodestyle('navio/')
 
 
 @task(validate)
@@ -34,9 +32,9 @@ def test(*args):
     """
     Run unit tests.
     """
-    pyTest = sh.Command("py.test")
-    pyTest(args, _err_to_out=True)
-
+    # pyTest = sh.Command("py.test")
+    # pyTest(args, _err_to_out=True)
+    subprocess.call(["py.test"] + list(args))
 
 @task()
 def check_uncommited():

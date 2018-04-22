@@ -453,6 +453,7 @@ class AWSCloudFormation(AWSSession):
             else:
                 raise Exception("Unknown error", None, sys.exc_info()[2])
         finally:
+            print('Deleting change set')
             cloudformation.delete_change_set(
                 StackName=stack_name,
                 ChangeSetName=change_set['Id']
