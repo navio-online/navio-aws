@@ -32,8 +32,8 @@ def test(*args):
     """
     Run unit tests.
     """
-    pyTest = nsh.Command("py.test")
-    pyTest(args)
+    pyTest = sh.Command("py.test")
+    pyTest(args, _err_to_out=True)
 
 
 @task()
