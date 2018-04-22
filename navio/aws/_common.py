@@ -74,6 +74,11 @@ def which(program):
 
 
 def generatePassword(**kwargs):
+    try:
+        xrange
+    except NameError:
+        xrange = range
+  
     _kwargs = {
         'len': 8,
         'symbols': "!@#$%^&*()_+-=[]{}",
