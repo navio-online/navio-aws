@@ -17,6 +17,11 @@ def apidoc():
 
 
 @task()
+def validate():
+    nsh.pycodestyle('navio')
+
+
+@task(validate)
 def build():
     nsh.python('setup.py', 'bdist_wheel')
     nsh.pip.install('.')
@@ -27,7 +32,6 @@ def test(*args):
     """
     Run unit tests.
     """
-    nsh.pep8('navio')
     pyTest = nsh.Command("py.test")
     pyTest(args)
 
