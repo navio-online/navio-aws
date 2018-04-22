@@ -9,50 +9,43 @@ class TestAWS:
         import navio.aws
 
 
-# class TestAWSSession:
+class TestAWSSession:
 
-#     def test_import(self):
-#         from navio.aws import AWSSession
-
-
-# class TestAWSCloudFormation:
-
-#     def test_import(self):
-#         from navio.aws import AWSCloudFormation
+    def test_import(self):
+        from navio.aws import AWSSession
 
 
-# class TestAWSCloudFront:
+class TestAWSCloudFormation:
 
-#     def test_import(self):
-#         from navio.aws import AWSCloudFront
-
-
-# class TestAWSLambda:
-
-#     def test_import(self):
-#         from navio.aws import AWSLambda
+    def test_import(self):
+        from navio.aws import AWSCloudFormation
 
 
-# class TestAWSS3:
+class TestAWSCloudFront:
 
-#     def test_import(self):
-#         from navio.aws import AWSS3
-
-
-# class TestAWSIAM:
-
-#     def test_import(self):
-#         from navio.aws import AWSIAM
+    def test_import(self):
+        from navio.aws import AWSCloudFront
 
 
-# class TestAWSEC2:
+class TestAWSLambda:
 
-#     def test_import(self):
-#         from navio.aws import AWSEC2
-        # ec2 = AWSEC2(profile_name='exrny.blue')
-        # ec2.generate_ssh_config(tags=[
-        #     {
-        #       'name': 'Name',
-        #       'value': 'ecs-cluster-prod'
-        #     }
-        #   ])
+    def test_import(self):
+        from navio.aws import AWSLambda
+
+
+class TestAWSS3:
+
+    def test_import(self):
+        from navio.aws import AWSS3
+
+
+class TestAWSIAM:
+
+    def test_import(self):
+        from navio.aws import AWSIAM
+
+
+class TestAWSEC2:
+
+    def test_import(self):
+        from navio.aws import AWSEC2
