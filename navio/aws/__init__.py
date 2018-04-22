@@ -4,7 +4,7 @@ Amazon AWS boto3 helper libs
 
 from navio.aws.services._iam import AWSIAM
 # from navio.aws.services._route53 import AWSRoute53
-from navio.aws.services._acm import AWSACM
+# from navio.aws.services._acm import AWSACM
 from navio.aws.services._session import AWSSession
 from navio.aws.services._cloudformation import AWSCloudFormation
 from navio.aws.services._lambda import AWSLambda
