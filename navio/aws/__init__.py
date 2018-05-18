@@ -20,7 +20,7 @@ __path__ = pkgutil.extend_path(__path__, __name__)
 
 __all__ = [
     'AWSSession', 'AWSLambda', 'AWSCloudFormation', 'AWSIAM',
-    'AWSS3', 'AWSCloudFront', 'AWSEC2', 'AWSLogs', 
+    'AWSS3', 'AWSCloudFront', 'AWSEC2', 'AWSLogs',
     'AWSACM',
     # 'AWSRoute53',
     'generatePassword', 'dump', 'print_out', 'print_err'

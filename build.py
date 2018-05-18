@@ -18,7 +18,7 @@ def apidoc():
 
 @task()
 def validate():
-    nsh.pycodestyle('navio/')
+    nsh.pycodestyle('navio/', '--max-line-length=110')
 
 
 @task(validate)

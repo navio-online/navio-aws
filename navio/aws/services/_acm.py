@@ -12,7 +12,6 @@ class AWSACM(AWSSession):
             self
         ).__init__(kwargs['profile_name'])
 
-
     def find_cert_arn(self, **kwargs):
         cert_arn = None
 
@@ -20,24 +19,22 @@ class AWSACM(AWSSession):
             raise Exception('Argument missing: domain_name')
 
         client = self.session.client('acm')
-    
+
         paginator = client.get_paginator('list_certificates')
 
         page_iterator = paginator.paginate(
-            CertificateStatuses = ['ISSUED']
+            CertificateStatuses=['ISSUED']
           )
         for page in page_iterator:
             if 'CertificateSummaryList' in page:
                 for cert in page['CertificateSummaryList']:
                     if cert['DomainName'] == kwargs['domain_name']:
                         if cert_arn:
-                            raise Exception('Multiple certificates with same domain name.')
+                            raise Exception('Multiple certificates ''with same domain name.')
                         else:
                             cert_arn = cert['CertificateArn']
 
         return cert_arn
-
-
 
     def request_via_dns(self, **kwargs):
         if 'domain_name' not in kwargs:
@@ -49,10 +46,10 @@ class AWSACM(AWSSession):
         client = self.session.client('acm')
 
         resp = client.request_certificate(
-            DomainName = kwargs.get('domain_name'),
-            SubjectAlternativeNames = kwargs.get('alternative_names'),
-            ValidationMethod = 'DNS',
-            IdempotencyToken = uuid.uuid4()            
+            DomainName=kwargs.get('domain_name'),
+            SubjectAlternativeNames=kwargs.get('alternative_names'),
+            ValidationMethod='DNS',
+            IdempotencyToken=uuid.uuid4()
         )
 
         return resp
@@ -64,10 +61,7 @@ class AWSACM(AWSSession):
         client = self.session.client('acm')
 
         resp = client.describe_certificate(
-            CertificateArn = certificate_arn
+            CertificateArn=certificate_arn
         )
 
         return resp['Certificate']['DomainValidationOptions'][0]['ResourceRecord']
-
-
-    
