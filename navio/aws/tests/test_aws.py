@@ -49,3 +49,8 @@ class TestAWSEC2:
 
     def test_import(self):
         from navio.aws import AWSEC2
+
+class TestAWSACM:
+
+    def test_import(self):
+        from navio.aws import AWSACM
