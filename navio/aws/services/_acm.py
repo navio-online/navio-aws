@@ -29,7 +29,7 @@ class AWSACM(AWSSession):
             if 'CertificateSummaryList' in page:
                 for cert in page['CertificateSummaryList']:
                     if cert['DomainName'] == kwargs['domain_name']:
-                        if cert_arn:
+                        if cert_arn != None:
                             raise Exception('Multiple certificates ''with same domain name.')
                         else:
                             cert_arn = cert['CertificateArn']
