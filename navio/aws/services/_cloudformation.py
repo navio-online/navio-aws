@@ -140,8 +140,6 @@ class AWSCloudFormation(AWSSession):
             else:
                 raise Exception("Can't find template file: {}".format(path))
 
-
-
     def exists(self):
         cloudformation = self.session.client('cloudformation')
         STACK_EXISTS_STATES = [
