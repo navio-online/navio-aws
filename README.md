@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/naviotech/navio-aws.png?branch=master)](https://travis-ci.org/naviotech/navio-aws)
+[![Build Status](https://travis-ci.org/navio-online/navio-aws.png?branch=master)](https://travis-ci.org/navio-online/navio-aws)
 
 AWS boto3 helper libs
 =====================
@@ -34,7 +34,7 @@ TODO
 ## Contributors/Contributing
 
 
-If you want to make changes the repo is at https://github.com/naviotech/navio-aws. You will need [pytest](http://www.pytest.org) to run the tests and [navio-builder](https://github.com/naviotech/navio-aws) tool to build modules
+If you want to make changes the repo is at https://github.com/navio-online/navio-aws. You will need [pytest](http://www.pytest.org) to run the tests and [navio-builder](https://github.com/navio-online/navio-aws) tool to build modules
 
 ```bash
 $ nb test
@@ -42,7 +42,7 @@ $ nb test
 
 It will be great if you can raise a [pull request](https://help.github.com/articles/using-pull-requests) once you are done.
 
-If you find any bugs or need new features please raise a ticket in the [issues section](https://github.com/naviotech/navio-aws/issues) of the github repo.
+If you find any bugs or need new features please raise a ticket in the [issues section](https://github.com/navio-online/navio-aws/issues) of the github repo.
     
 ## License
 
