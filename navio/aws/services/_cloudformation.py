@@ -71,19 +71,21 @@ class AWSCloudFormation(AWSSession):
             else:
                 self.parameters = None
 
-            self.template = os.path.abspath(os.path.join(
-                os.getcwd(), './src/main/cloudformation/', self.template))
+            # self.template = os.path.abspath(os.path.join(
+            #     os.getcwd(), './src/main/cloudformation/', self.template))
+            self.template = self.get_template_abs_path(self.template)
             for idx, template in enumerate(self.includes):
                 if not os.path.isabs(template):
                     if template.startswith('./') or template.startswith('../'):
                         self.includes[idx] = os.path.abspath(
                             os.path.join(os.getcwd(), template))
                     else:
-                        self.includes[idx] = os.path.abspath(os.path.join(
-                            os.getcwd(),
-                            './src/main/cloudformation/',
-                            template
-                        ))
+                        # self.includes[idx] = os.path.abspath(os.path.join(
+                        #     os.getcwd(),
+                        #     './src/main/cloudformation/',
+                        #     template
+                        # ))
+                        self.includes[idx] = self.get_template_abs_path(template)
 
                 if not os.path.isfile(self.includes[idx]):
                     raise Exception("Can't find template file"
@@ -97,12 +99,13 @@ class AWSCloudFormation(AWSSession):
                         self.resources[idx] = os.path.abspath(
                             os.path.join(os.getcwd(), file))
                     else:
-                        self.resources[idx] = os.path.abspath(
-                            os.path.join(
-                                os.getcwd(),
-                                './src/main/resources/',
-                                file
-                            ))
+                        # self.resources[idx] = os.path.abspath(
+                        #     os.path.join(
+                        #         os.getcwd(),
+                        #         './src/main/resources/',
+                        #         file
+                        #     ))
+                        self.resources[idx] = self.get_template_abs_path(file)
 
                 if not os.path.isfile(self.resources[idx]):
                     raise Exception("Can't find resource file "
@@ -120,9 +123,24 @@ class AWSCloudFormation(AWSSession):
             if self.s3_key.startswith('/'):
                 self.s3_key = self.s3_key[1:]
 
-    # @property
-    # def s3_uri(self):
-    #   return self._s3_uri
+    def get_template_abs_path(self, template):
+        path = os.path.abspath(os.path.join(
+                    os.getcwd(),
+                    './src/main/cloudformation/',
+                    template))
+        if os.path.isfile(path):
+            return path
+        else:
+            path = os.path.abspath(os.path.join(
+                    os.getcwd(),
+                    './src/cloudformation/',
+                    template))
+            if os.path.isfile(path):
+                return path
+            else:
+                raise Exception("Can't find template file: {}".format(path))
+
+
 
     def exists(self):
         cloudformation = self.session.client('cloudformation')
