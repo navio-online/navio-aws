@@ -11,3 +11,4 @@ build
 .pypirc
 append_creds.sh
 .cache
+.pytest_cache

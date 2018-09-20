@@ -46,4 +46,4 @@ If you find any bugs or need new features please raise a ticket in the [issues s
     
 ## License
 
-navio-builder is licensed under a [MIT license](http://opensource.org/licenses/MIT)
+navio-travis is licensed under a [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
