@@ -21,11 +21,22 @@ class AWSLambda(AWSSession):
         super(self.__class__, self).__init__(kwargs['profile_name'])
         self.profile_name = kwargs['profile_name']
         self.function_name = kwargs['function_name']
+        self.language = kwargs['language']
+        self.pip_requirements = kwargs.get('pip_requirements', None)
+        self.pip_requirements_file = kwargs.get('pip_requirements_file', None)
+        self.npm_requirements = kwargs.get('npm_requirements', None)
+        self.npm_package_json = kwargs.get('npm_package_json', None)
 
-        if 'pip_requirements' in kwargs:
-            self.pip_requirements = kwargs['pip_requirements']
-        else:
-            self.pip_requirements = list()
+        # if self.language == 'python':
+        #   if 'pip_requirements' in kwargs:
+        #       self.pip_requirements = kwargs['pip_requirements']
+        #   else:
+        #       self.pip_requirements = list()
+        # elif self.language == 'nodejs':
+        #   if 'npm_requirements' in kwargs:
+        #       self.npm_requirements = kwargs['npm_requirements']
+        #   else:
+        #       self.npm_requirements = list()
 
         self.s3_filename = kwargs['s3_filename']
 
@@ -74,30 +85,52 @@ class AWSLambda(AWSSession):
         print('[ Packaging lambda deployment package ]')
         shutil.rmtree('target/distrib/', ignore_errors=True)
 
-        files = ls('src/main/python/', '*.py')
+        source_dir = None
+
+        if self.language == 'python':
+            if os.path.isdir('src/main/python'):
+                source_dir = 'src/main/python'
+            elif os.path.isdir('src/python'):
+                source_dir = 'src/python'
+            else:
+                raise Exception('Source dir not found: src/python')
+        elif self.language == 'nodejs':
+            if os.path.isdir('src/main/nodejs'):
+                source_dir = 'src/main/nodejs'
+            elif os.path.isdir('src/nodejs'):
+                source_dir = 'src/nodejs'
+            else:
+                raise Exception('Source dir not found: src/nodejs')
+
+        files = ls(source_dir, '*.py')
         cwd = os.getcwd()
         print('[ Files ]')
         for name in files:
             print(name[len(cwd)+1:])
 
-        shutil.copytree('src/main/python/', 'target/distrib/',
+        shutil.copytree(source_dir, 'target/distrib/',
                         ignore=shutil.ignore_patterns('*.pyc', 'tmp*'))
 
-        self.install_deps(['--target', 'target/distrib/'])
+        if self.language == 'python':
+            self.install_pip_deps(['--target', 'target/distrib/'])
+        elif self.language == 'nodejs':
+            self.install_npm_deps(['--prefix', 'target/distrib/', '-g'])
 
         zipf = zipfile.ZipFile(
             'target/{}'.format(self.s3_filename), 'w', zipfile.ZIP_DEFLATED)
-        # with safe_cd('target/distrib/')
+
         basedir_len = len(os.path.abspath(
             os.path.join(os.getcwd(), 'target/distrib')))
+
         for name in ls('target/distrib/'):
             zipf.write(name, name[basedir_len:])
+
         zipf.close()
 
         return True
 
-    def install_deps(self, pip_args=None):
-        print('[ Installing lambda dependencies ]')
+    def install_pip_deps(self, pip_args=None):
+        print('[ Installing lambda dependencies (via pip) ]')
         print('[ Dependencies ]')
 
         args = ['install', '--upgrade']
@@ -113,12 +146,41 @@ class AWSLambda(AWSSession):
                 else:
                     args.append(pip_arg)
 
-        for req in self.pip_requirements:
-            print('Installing {}'.format(req))
-            execute('pip', args, req)
+        if type(self.pip_requirements) == list:
+            for req in self.pip_requirements:
+                print('Installing {}'.format(req))
+                execute('pip', args, req)
+        if type(self.pip_requirements_file) == str:
+            print('Installing from {}'.format(self.pip_requirements_file))
+            args.append('-r')
+            execute('pip', args, self.pip_requirements_file)
 
-        if not self.pip_requirements or len(self.pip_requirements) == 0:
+        if type(self.pip_requirements) is None and type(self.pip_requirements_file) is None:
             print("Your lambda doesn't have any pip dependencies")
+
+    def install_npm_deps(self, npm_args=None):
+        print('[ Installing lambda dependencies (via npm) ]')
+        print('[ Dependencies ]')
+
+        args = ['install']
+
+        if npm_args:
+            if type(npm_args) != list:
+                raise "npm_args argument should be of a list() type"
+
+            for npm_arg in npm_args:
+                args.append(npm_arg)
+
+        if type(self.npm_requirements) == list:
+            for req in self.npm_requirements:
+                print('Installing {}'.format(req))
+                execute('npm', 'install', args, req)
+        if type(self.npm_package_json) == str:
+            print('Installing from {}'.format(self.npm_package_json))
+            execute('npm', 'install', args, os.path.dirname(self.npm_package_json))
+
+        if type(self.npm_requirements) is None and type(self.npm_requirements_file) is None:
+            print("Your lambda doesn't have any npm dependencies")
 
     def upload(self):
         s3 = self.session.client('s3')
@@ -181,7 +243,7 @@ class AWSLambda(AWSSession):
                 datetime.utcnow().strftime("%Y-%b-%d %H:%M:%S"))
         )
 
-    def test_local(self, event={}, **kwargs):
+    def test_local_python(self, event={}, **kwargs):
         lambdas = self.session.client('lambda')
         if kwargs and 'function_name' in kwargs:
             function_name = kwargs['function_name']

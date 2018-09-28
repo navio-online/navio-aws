@@ -56,8 +56,8 @@ the github repo.
 License
 -------
 
-navio-builder is licensed under a `MIT
-license <http://opensource.org/licenses/MIT>`__
+navio-travis is licensed under a `Apache 2.0
+license <http://www.apache.org/licenses/LICENSE-2.0>`__
 
 .. |Build Status| image:: https://travis-ci.org/navio-online/navio-aws.png?branch=master
    :target: https://travis-ci.org/navio-online/navio-aws
