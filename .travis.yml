@@ -1,9 +1,12 @@
+dist: xenial
+sudo: true
 language: python
 python:
 - '2.7'
 - '3.4'
 - '3.5'
 - '3.6'
+- '3.7'
 env:
   global:
   - secure: R6ch4fcr3D99ILWkxFl+O7YlbblDeKPTQhBcUQLk7dUV77zhUI75I0sUDMucvwZXJYJR7dptVUOqTcN44hR6IFr+adoYKT6CcdmofKgLqKRSS1uWVx+KYLq7H9srMYpwQl3FjhwMoR+KqVOi/gCyXcUBIECUzmMVfRY1QUG1hQ/rra5TI96LuBSuu/o1EREITzfezIurqBQs5BZuE+rD1USQ2EIcBQHCLfibwpqgcRTI/FkdpaIRDtUr9V7mw2380JVlzEIJSsfSaqd5VGuENlJln6XzyUuGfol1LZ4u/ismmttT/tP9PIhVSS9AP2ftWGdjkROkQ8ytMO0xEtymbRY3N1Yzx9FCbqEMU3RXX3yzjKy76m7Z0LFXpw0AMys2eieeTlJ73OYy8iaUWjA61ZMt4skc4xDW1wOJjmXE2jDAR5W+tdaPaAQLvjWgYha3OwZiv9g074Bj+SSQ86/AbiKFS6wC2WFetvC+zq4kyLTzeLbfr++YPLwKURcMRHOeT2TKhtWI8O+CUkUCTu3vLkfJ+NJpaTYuz+Bx0hzh7FeplG9g174fLoG1Ef0huDwYxCb7MAg0rdA0zM3yfIobUuTlFeqBRobwMckCxqLe3BnWeQjw83B+mEGbIPcOIIlpczFc2LvVFDy0Pnwp/SbKuIMznzPQQj6XQXvwMFF3x+o=
@@ -15,5 +18,5 @@ script:
 jobs:
   include:
   - stage: deploy
-    python: 3.6
+    python: 3.7
     script: nb pypi
