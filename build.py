@@ -31,9 +31,7 @@ def test(*args):
     """
     Run unit tests.
     """
-    # pyTest = sh.Command("py.test")
-    # pyTest(args, _err_to_out=True)
-    subprocess.call(["py.test"] + list(args))
+    nsh.pytest(args)
 
 @task()
 def check_uncommited():
