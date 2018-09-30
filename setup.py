@@ -8,6 +8,7 @@ setup(
     url=navio.meta_aws.__website__,
     packages=['navio', 'navio.aws', 'navio.aws.services'],
     install_requires=['boto3'],
+    tests_require=['boto3'],
     license='Apache 2.0 license',
     classifiers=[
         'Development Status :: 4 - Beta',
