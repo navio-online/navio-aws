@@ -30,12 +30,12 @@ def test(*args):
     """
     Run unit tests.
     """
-    nsh.pytest(args)
+    nsh.python('setup.py', 'test')
 
 
 @task()
 def check_uncommited():
-    result = sh.git('status', '--porcelain')
+    result = sh.git('status', '--porcelain', '--untracked-files=no')
     if result:
         raise Exception('There are uncommited files')
 
