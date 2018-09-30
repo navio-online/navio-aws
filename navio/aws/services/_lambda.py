@@ -93,7 +93,7 @@ class AWSLambda(AWSSession):
             else:
                 raise Exception('Source dir not found: src/nodejs')
 
-        files = ls(source_dir, '*.py')
+        files = ls(source_dir, '*.py', '*.js')
         cwd = os.getcwd()
         print('[ Files ]')
         for name in files:
