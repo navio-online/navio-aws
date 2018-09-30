@@ -1,4 +1,4 @@
-__version__ = "0.1.41"
+__version__ = "0.1.42"
 __license__ = "MIT License"
 __website__ = "https://oss.navio.tech/navio-aws/"
 __download_url__ = ('https://github.com/naviotech/navio-aws/archive'
