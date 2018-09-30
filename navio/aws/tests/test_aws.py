@@ -73,3 +73,10 @@ class TestAWSACM:
 
     def test_import(self):
         from navio.aws import AWSACM
+
+
+class TestCommon:
+
+    def test_import(self):
+        from navio.aws._common import ls
+        ls('.')
