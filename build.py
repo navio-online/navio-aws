@@ -23,7 +23,7 @@ def validate():
 
 @task(validate)
 def build():
-    nsh.python('setup.py', 'bdist_wheel')
+    nsh.python('setup.py', 'sdist', 'bdist_wheel', '--universal')
 
 
 @task(build)
@@ -111,8 +111,7 @@ def release(ver=None):
 
 
 @task(test)
-def pypi():
-    nsh.python('setup.py', 'sdist')
+def pypi():    
     args = ['upload']
 
     travis_pull_request = os.environ.get(
