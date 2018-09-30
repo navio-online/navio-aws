@@ -16,7 +16,8 @@ def apidoc():
 
 @task()
 def validate():
-    nsh.travis('lint')
+    if os.environ.get('TRAVIS','false') is not 'true':
+        nsh.travis('lint')
     nsh.pycodestyle('build.py', 'setup.py', '--max-line-length=110')
     nsh.pycodestyle('navio/', '--max-line-length=110')
 
