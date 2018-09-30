@@ -94,10 +94,9 @@ class AWSLambda(AWSSession):
                 raise Exception('Source dir not found: src/nodejs')
 
         files = ls(source_dir, '*.py', '*.js')
-        cwd = os.getcwd()
         print('[ Files ]')
         for name in files:
-            print(name[len(cwd)+1:])
+            print(name[len(source_dir)+1:])
 
         shutil.copytree(source_dir, 'target/distrib/',
                         ignore=shutil.ignore_patterns('*.pyc', 'tmp*'))
@@ -110,8 +109,7 @@ class AWSLambda(AWSSession):
         zipf = zipfile.ZipFile(
             'target/{}'.format(self.s3_filename), 'w', zipfile.ZIP_DEFLATED)
 
-        basedir_len = len(os.path.abspath(
-            os.path.join(os.getcwd(), 'target/distrib')))
+        basedir_len = len('target/distrib/')
 
         for name in ls('target/distrib/'):
             zipf.write(name, name[basedir_len:])
