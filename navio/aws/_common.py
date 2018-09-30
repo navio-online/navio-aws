@@ -4,6 +4,7 @@ import os
 import fnmatch
 import contextlib
 import random
+import functools
 import json
 from datetime import date, datetime
 
