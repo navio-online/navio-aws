@@ -32,6 +32,23 @@ class TestAWSLambda:
     def test_import(self):
         from navio.aws import AWSLambda
 
+    def test_languages(self):
+        from navio.aws import AWSLambda
+        AWSLambda(
+            profile_name='test',
+            function_name='test',
+            s3_filename='test',
+            s3_uri='test',
+            language='python'
+          )
+        AWSLambda(
+            profile_name='test',
+            function_name='test',
+            s3_filename='test',
+            s3_uri='test',
+            language='nodejs'
+          )
+
 
 class TestAWSS3:
 

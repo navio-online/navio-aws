@@ -24,7 +24,6 @@ def validate():
 @task(validate)
 def build():
     nsh.python('setup.py', 'bdist_wheel')
-    nsh.pip.install('.')
 
 
 @task(build)

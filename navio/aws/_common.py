@@ -39,23 +39,28 @@ def execute(script, *args):
         sys.exit(1)
 
 
-def ls(walk_dir, pattern='*'):
-    walk_dir = os.path.abspath(os.path.join(os.getcwd(), walk_dir))
-    if not os.path.isdir(walk_dir):
-        raise Exception("Wrong dir path: %s" % walk_dir)
+def ls(walk_dir, *patterns):
+    """
+    Returns a generator yielding files matching the given patterns
+    :type dir_path: str
+    :type patterns: [str]
+    :rtype : [str]
+    :param dir_path: Directory to search for files/directories under. Defaults to current dir.
+    :param patterns: Patterns of files to search for. Defaults to ["*"]. Example: ["*.json", "*.xml"]
+    """
+    path_patterns = patterns or ["*"]
 
     result = list()
-    for dirpath, dirnames, files in os.walk(walk_dir):
-        for filename in [f for f in files if fnmatch.fnmatch(f, pattern)]:
-            full_filename = os.path.join(dirpath, filename)
-            result.append(full_filename)
+    for root_dir, dir_names, file_names in os.walk(walk_dir):
+        filter_partial = functools.partial(fnmatch.filter, file_names)
+
+        for file_name in itertools.chain(*map(filter_partial, path_patterns)):
+            result.append(os.path.join(root_dir, file_name))
 
     return result
 
 
 def which(program):
-    import os
-
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 

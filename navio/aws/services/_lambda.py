@@ -21,24 +21,15 @@ class AWSLambda(AWSSession):
         super(self.__class__, self).__init__(kwargs['profile_name'])
         self.profile_name = kwargs['profile_name']
         self.function_name = kwargs['function_name']
-        self.language = kwargs['language']
+        self.language = kwargs.get('language', 'python')
+        self.s3_filename = kwargs['s3_filename']
         self.pip_requirements = kwargs.get('pip_requirements', None)
         self.pip_requirements_file = kwargs.get('pip_requirements_file', None)
         self.npm_requirements = kwargs.get('npm_requirements', None)
         self.npm_package_json = kwargs.get('npm_package_json', None)
 
-        # if self.language == 'python':
-        #   if 'pip_requirements' in kwargs:
-        #       self.pip_requirements = kwargs['pip_requirements']
-        #   else:
-        #       self.pip_requirements = list()
-        # elif self.language == 'nodejs':
-        #   if 'npm_requirements' in kwargs:
-        #       self.npm_requirements = kwargs['npm_requirements']
-        #   else:
-        #       self.npm_requirements = list()
-
-        self.s3_filename = kwargs['s3_filename']
+        if self.language not in ['python', 'nodejs']:
+            raise Exception('Unsupportable language: {}'.format(self.language))
 
         url = urlparse(kwargs['s3_uri'])
         self.s3_bucket = url.netloc
