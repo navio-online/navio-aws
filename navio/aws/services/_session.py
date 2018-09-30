@@ -18,7 +18,7 @@ class AWSSession(object):
                 self.session = boto3.session.Session(
                     profile_name=self.profile_name)
         else:
-            self.session = boto3.session.Session()
+            raise Exception('Profile not available: {}'.format(profile_name))
 
     def client(self, name):
         return self.session.client(name)
