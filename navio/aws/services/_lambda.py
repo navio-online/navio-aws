@@ -164,11 +164,16 @@ class AWSLambda(AWSSession):
             for req in self.npm_requirements:
                 print('Installing {}'.format(req))
                 execute('npm', 'install', args, req)
-        if type(self.npm_package_json) == str:
+            
+            if type(self.npm_package_json) == str:
+                raise Exception("You can't have both npm_requirements and npm_package_json set.")
+        elif type(self.npm_package_json) == str:
             print('Installing from {}'.format(self.npm_package_json))
             execute('npm', 'install', args)
-
-        if type(self.npm_requirements) is None and type(self.npm_requirements_file) is None:
+            
+            if type(self.npm_requirements) == list:
+                raise Exception("You can't have both npm_requirements and npm_package_json set.")
+        else:
             print("Your lambda doesn't have any npm dependencies")
 
         shutil.copytree('node_modules', 'target/distrib/')
