@@ -176,7 +176,7 @@ class AWSLambda(AWSSession):
         else:
             print("Your lambda doesn't have any npm dependencies")
 
-        shutil.copytree('node_modules', 'target/distrib/')
+        shutil.copytree('node_modules', 'target/distrib/node_modules')
 
     def upload(self):
         s3 = self.session.client('s3')
