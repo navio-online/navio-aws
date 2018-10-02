@@ -5,7 +5,7 @@ import shutil
 import zipfile
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
-from navio.aws._common import execute, ls, which
+from navio.aws._common import execute, ls, which, safe_cd
 from subprocess import check_call, CalledProcessError
 from datetime import datetime
 
@@ -104,7 +104,7 @@ class AWSLambda(AWSSession):
         if self.language == 'python':
             self.install_pip_deps(['--target', 'target/distrib/'])
         elif self.language == 'nodejs':
-            self.install_npm_deps(['--prefix', 'target/distrib/', '-g'])
+            self.install_npm_deps()
 
         zipf = zipfile.ZipFile(
             'target/{}'.format(self.s3_filename), 'w', zipfile.ZIP_DEFLATED)
@@ -150,26 +150,30 @@ class AWSLambda(AWSSession):
     def install_npm_deps(self, npm_args=None):
         print('[ Installing lambda dependencies (via npm) ]')
         print('[ Dependencies ]')
+        
+        with safe_cd('target/distrib'):          
+            args = ['--production']
 
-        args = ['install']
+            if npm_args:
+                if type(npm_args) != list:
+                    raise "npm_args argument should be of a list() type"
 
-        if npm_args:
-            if type(npm_args) != list:
-                raise "npm_args argument should be of a list() type"
+                for npm_arg in npm_args:
+                    args.append(npm_arg)
 
-            for npm_arg in npm_args:
-                args.append(npm_arg)
+            if type(self.npm_requirements) == list:
+                for req in self.npm_requirements:
+                    print('Installing {}'.format(req))
+                    execute('npm', 'install', args, req)
+            if type(self.npm_package_json) == str:
+                shutil.copy('../../package.json', 'package.json')
+                print('Installing from {}'.format(self.npm_package_json))
+                execute('npm', 'install', args)
 
-        if type(self.npm_requirements) == list:
-            for req in self.npm_requirements:
-                print('Installing {}'.format(req))
-                execute('npm', 'install', args, req)
-        if type(self.npm_package_json) == str:
-            print('Installing from {}'.format(self.npm_package_json))
-            execute('npm', 'install', args, os.path.dirname(self.npm_package_json))
+            if type(self.npm_requirements) is None and type(self.npm_requirements_file) is None:
+                print("Your lambda doesn't have any npm dependencies")
 
-        if type(self.npm_requirements) is None and type(self.npm_requirements_file) is None:
-            print("Your lambda doesn't have any npm dependencies")
+            os.remove('package.json')
 
     def upload(self):
         s3 = self.session.client('s3')
