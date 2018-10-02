@@ -96,7 +96,7 @@ def push():
     nsh.git('push', '--tags', '--verbose')
 
 
-@task()
+@task(validate)
 def release(ver=None):
     check_uncommited()
     update_version(ver)
