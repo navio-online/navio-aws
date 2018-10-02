@@ -111,7 +111,9 @@ class AWSLambda(AWSSession):
 
         basedir_len = len('target/distrib/')
 
+        print('Packaging lambda deployment')
         for name in ls('target/distrib/'):
+            print('Adding file: {}'.format(name[basedir_len:]))
             zipf.write(name, name[basedir_len:])
 
         zipf.close()
