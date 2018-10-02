@@ -141,7 +141,7 @@ class AWSCloudFormation(AWSSession):
                 raise Exception("Can't find template file: {}".format(path))
 
     def exists(self):
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
         STACK_EXISTS_STATES = [
             'CREATE_COMPLETE',
             'ROLLBACK_COMPLETE',
@@ -179,7 +179,7 @@ class AWSCloudFormation(AWSSession):
         return self.output(output_key, **kwargs)
 
     def output(self, output_key, **kwargs):
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
         STACK_EXISTS_STATES = [
             'CREATE_COMPLETE',
             'ROLLBACK_COMPLETE',
@@ -232,7 +232,7 @@ class AWSCloudFormation(AWSSession):
         return None
 
     def validate(self, details=False):
-        s3 = self.session.client('s3')
+        s3 = self.client('s3')
         for template in ([self.template] + self.includes):
 
             if template in shared.store['validated_templates']:
@@ -257,7 +257,7 @@ class AWSCloudFormation(AWSSession):
             template_url = "https://s3.amazonaws.com/%s/%s" % (
                 self.s3_bucket, temp_filename)
             print("Validating template %s" % template_url)
-            resp = self.session.client('cloudformation').validate_template(
+            resp = self.client('cloudformation').validate_template(
                 TemplateURL=template_url
             )
 
@@ -275,7 +275,7 @@ class AWSCloudFormation(AWSSession):
     def create(self, **kwargs):
         self._upload()
 
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -303,7 +303,7 @@ class AWSCloudFormation(AWSSession):
     def update(self, **kwargs):
         self._upload()
 
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -328,7 +328,7 @@ class AWSCloudFormation(AWSSession):
         return
 
     def delete(self, **kwargs):
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -346,7 +346,7 @@ class AWSCloudFormation(AWSSession):
         return
 
     def wait_complete(self, **kwargs):
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -361,7 +361,7 @@ class AWSCloudFormation(AWSSession):
         return
 
     def wait_update(self, **kwargs):
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -376,7 +376,7 @@ class AWSCloudFormation(AWSSession):
         return
 
     def wait_delete(self, **kwargs):
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -393,7 +393,7 @@ class AWSCloudFormation(AWSSession):
     def dry_run(self, **kwargs):
         self._upload()
 
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -480,7 +480,7 @@ class AWSCloudFormation(AWSSession):
     def estimate_cost(self, **kwargs):
         self._upload()
 
-        cloudformation = self.session.client('cloudformation')
+        cloudformation = self.client('cloudformation')
 
         stack_name = self.stack_name
         if 'stack_name' in kwargs:
@@ -505,7 +505,7 @@ class AWSCloudFormation(AWSSession):
     def _upload(self):
         print("Uploading %s to s3://%s/%s" %
               (self.template, self.s3_bucket, self.s3_key))
-        S3Transfer(self.session.client('s3')).upload_file(
+        S3Transfer(self.client('s3')).upload_file(
             self.template,
             self.s3_bucket,
             self.s3_key,
@@ -521,7 +521,7 @@ class AWSCloudFormation(AWSSession):
 
             print("Uploading %s to s3://%s/%s" %
                   (file, self.s3_bucket, file_s3_key))
-            S3Transfer(self.session.client('s3')).upload_file(
+            S3Transfer(self.client('s3')).upload_file(
                 file,
                 self.s3_bucket,
                 file_s3_key,

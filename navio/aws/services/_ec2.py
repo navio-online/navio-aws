@@ -39,7 +39,7 @@ class AWSEC2(AWSSession):
                     raise Exception('Wrong value for tags element:'
                                     ' {}'.format(json.dumps(tag)))
 
-        resp = self.session.client('ec2').describe_instances(
+        resp = self.client('ec2').describe_instances(
             Filters=filters
         )
 

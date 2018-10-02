@@ -14,7 +14,7 @@ class AWSLogs(AWSSession):
         if 'group_name' not in kwargs:
             raise Exception('Argument missing: group_name')
 
-        resp = self.session.client('logs').describe_log_groups(
+        resp = self.client('logs').describe_log_groups(
             logGroupNamePrefix=kwargs.get('group_name')
         )
 

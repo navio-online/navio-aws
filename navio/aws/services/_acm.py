@@ -18,7 +18,7 @@ class AWSACM(AWSSession):
         if 'domain_name' not in kwargs:
             raise Exception('Argument missing: domain_name')
 
-        client = self.session.client('acm')
+        client = self.client('acm')
 
         paginator = client.get_paginator('list_certificates')
 
@@ -43,7 +43,7 @@ class AWSACM(AWSSession):
         if 'alternative_names' not in kwargs:
             raise Exception('Argument missing: alternative_names')
 
-        client = self.session.client('acm')
+        client = self.client('acm')
 
         resp = client.request_certificate(
             DomainName=kwargs.get('domain_name'),
@@ -58,7 +58,7 @@ class AWSACM(AWSSession):
         if 'certificate_arn' not in kwargs:
             raise Exception('Argument missing: certificate_arn')
 
-        client = self.session.client('acm')
+        client = self.client('acm')
 
         resp = client.describe_certificate(
             CertificateArn=certificate_arn

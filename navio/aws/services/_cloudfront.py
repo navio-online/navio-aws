@@ -19,7 +19,7 @@ class AWSCloudFront(AWSSession):
         self.distribution_id = kwargs.get('distribution_id')
 
     def invalidate(self, **kwargs):
-        cloudfront = self.session.client('cloudfront')
+        cloudfront = self.client('cloudfront')
         resp = cloudfront.create_invalidation(
             DistributionId=self.distribution_id,
             InvalidationBatch={

@@ -31,7 +31,7 @@ class AWSS3(AWSSession):
         if 'bucket_name' not in kwargs:
             raise Exception('Argument missing: bucket_name')
 
-        s3api = self.session.client('s3')
+        s3api = self.client('s3')
 
         try:
             s3api.head_bucket(Bucket=kwargs.get('bucket_name'))
@@ -54,7 +54,7 @@ class AWSS3(AWSSession):
             return self._sync_no_metadata(**kwargs)
 
     def _sync_with_metadata(self, **kwargs):
-        s3api = self.session.client('s3')
+        s3api = self.client('s3')
         s3res = self.session.resource('s3')
 
         result = dict()
@@ -216,7 +216,7 @@ class AWSS3(AWSSession):
     def _list_s3_files(self, s3_bucket, s3_key):
         result = list()
 
-        s3api = self.session.client('s3')
+        s3api = self.client('s3')
         paginator = s3api.get_paginator('list_objects_v2')
         page_iterator = paginator.paginate(Bucket=s3_bucket, Prefix=s3_key)
         for page in page_iterator:

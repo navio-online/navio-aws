@@ -14,7 +14,7 @@ class AWSIAM(AWSSession):
         super(self.__class__, self).__init__(kwargs['profile_name'])
 
     def create_access_key(self, **kwargs):
-        resp = self.session.client('iam').create_access_key(
+        resp = self.client('iam').create_access_key(
             UserName=kwargs.get('username')
         )
 
@@ -33,7 +33,7 @@ class AWSIAM(AWSSession):
             return resp['AccessKey']
 
     def create_password(self, **kwargs):
-        aws_iam = self.session.client('iam')
+        aws_iam = self.client('iam')
 
         account_alias = self.get_signin_url()
 
@@ -79,7 +79,7 @@ class AWSIAM(AWSSession):
             return password
 
     def get_signin_url(self):
-        aws_iam = self.session.client('iam')
+        aws_iam = self.client('iam')
         resp = aws_iam.list_account_aliases()
 
         if len(resp['AccountAliases']) != 1:
