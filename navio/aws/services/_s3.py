@@ -55,7 +55,7 @@ class AWSS3(AWSSession):
 
     def _sync_with_metadata(self, **kwargs):
         s3api = self.client('s3')
-        s3res = self.session.resource('s3')
+        s3res = self.resource('s3')
 
         result = dict()
         result['updated_files'] = list()
