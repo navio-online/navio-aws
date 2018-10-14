@@ -43,7 +43,8 @@ class AWSCloudFormation(AWSSession):
 
             self.on_failure = kwargs.get('on_failure', 'DELETE')
             self.serverless = kwargs.get('serverless', False)
-            raise Exception('serveless argument should be bool') if type(self.serverless) != bool
+            if type(self.serverless) != bool:
+                raise Exception('serveless argument should be bool')
 
             if 'template' in kwargs and type(kwargs['template']) == str:
                 self.template = kwargs['template']
