@@ -16,8 +16,8 @@ def apidoc():
 
 @task()
 def validate():
-    if os.environ.get('TRAVIS', 'false') == 'false':
-        nsh.travis('lint')
+    # if os.environ.get('TRAVIS', 'false') == 'false':
+    #     nsh.travis('lint')
     nsh.pycodestyle('build.py', 'setup.py', '--max-line-length=110')
     nsh.pycodestyle('navio/', '--max-line-length=110')
 
@@ -39,7 +39,8 @@ def test(*args):
 def check_uncommited():
     result = sh.git('status', '--porcelain', '--untracked-files=no')
     if result:
-        raise Exception('There are uncommited files')
+        print('There are uncommited files:\n{}'.format(result))
+        raise Exception('There are uncommited files:\n{}'.format(result))
 
 
 @task()

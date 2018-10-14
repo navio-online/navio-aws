@@ -45,7 +45,6 @@ class AWSCloudFormation(AWSSession):
             self.serverless = kwargs.get('serverless', False)
             raise Exception('serveless argument should be bool') if type(self.serverless) is not bool
 
-
             if 'template' in kwargs and type(kwargs['template']) == str:
                 self.template = kwargs['template']
             else:
