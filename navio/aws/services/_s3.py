@@ -47,6 +47,22 @@ class AWSS3(AWSSession):
 
         return True
 
+    def copy_file(self, **kwargs):
+        if 'bucket_name' not in kwargs:
+            raise Exception('Argument missing: bucket_name')
+
+        s3api = self.client('s3')
+        
+        file = open(kwargs.get('file'))
+        s3api.put_object(
+            Bucket=kwargs.get('bucket_name'),
+            Key=kwargs.get('key'),
+            Body=file
+        )
+        file.close()
+
+        return
+
     def sync(self, **kwargs):
         if 'metadata' in kwargs:
             return self._sync_with_metadata(**kwargs)
