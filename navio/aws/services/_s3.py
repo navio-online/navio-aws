@@ -25,7 +25,7 @@ class AWSS3(AWSSession):
         super(
             self.__class__,
             self
-        ).__init__(kwargs['profile_name'])
+        ).__init__(kwargs['profile_name'], kwargs.get('region_name', None))
 
     def bucket_exists(self, **kwargs):
         if 'bucket_name' not in kwargs:

@@ -10,7 +10,7 @@ class AWSACM(AWSSession):
         super(
             self.__class__,
             self
-        ).__init__(kwargs['profile_name'])
+        ).__init__(kwargs['profile_name'], kwargs.get('region_name', None))
 
     def find_cert_arn(self, **kwargs):
         cert_arn = None

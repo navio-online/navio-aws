@@ -18,7 +18,11 @@ except ImportError:
 class AWSLambda(AWSSession):
 
     def __init__(self, **kwargs):
-        super(self.__class__, self).__init__(kwargs['profile_name'])
+        super(
+            self.__class__,
+            self
+        ).__init__(kwargs['profile_name'], kwargs.get('region_name', None))
+
         self.profile_name = kwargs['profile_name']
         self.function_name = kwargs['function_name']
         self.language = kwargs.get('language', 'python')

@@ -8,7 +8,7 @@ class AWSLogs(AWSSession):
         super(
             self.__class__,
             self
-        ).__init__(kwargs['profile_name'])
+        ).__init__(kwargs['profile_name'], kwargs.get('region_name', None))
 
     def group_exists(self, **kwargs):
         if 'group_name' not in kwargs:
