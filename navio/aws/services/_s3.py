@@ -52,7 +52,7 @@ class AWSS3(AWSSession):
             raise Exception('Argument missing: bucket_name')
 
         s3api = self.client('s3')
-        
+
         file = open(kwargs.get('file'), 'rb')
         s3api.put_object(
             Bucket=kwargs.get('bucket_name'),
