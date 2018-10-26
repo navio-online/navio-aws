@@ -53,7 +53,7 @@ class AWSS3(AWSSession):
 
         s3api = self.client('s3')
         
-        file = open(kwargs.get('file'))
+        file = open(kwargs.get('file'), 'rb')
         s3api.put_object(
             Bucket=kwargs.get('bucket_name'),
             Key=kwargs.get('key'),

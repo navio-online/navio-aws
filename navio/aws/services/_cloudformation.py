@@ -5,6 +5,7 @@ import uuid
 import json
 import sys
 import time
+from datetime import datetime
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws import shared
@@ -74,8 +75,6 @@ class AWSCloudFormation(AWSSession):
             else:
                 self.parameters = None
 
-            # self.template = os.path.abspath(os.path.join(
-            #     os.getcwd(), './src/main/cloudformation/', self.template))
             self.template = self.get_template_abs_path(self.template)
             for idx, template in enumerate(self.includes):
                 if not os.path.isabs(template):
@@ -83,11 +82,6 @@ class AWSCloudFormation(AWSSession):
                         self.includes[idx] = os.path.abspath(
                             os.path.join(os.getcwd(), template))
                     else:
-                        # self.includes[idx] = os.path.abspath(os.path.join(
-                        #     os.getcwd(),
-                        #     './src/main/cloudformation/',
-                        #     template
-                        # ))
                         self.includes[idx] = self.get_template_abs_path(template)
 
                 if not os.path.isfile(self.includes[idx]):
@@ -102,12 +96,6 @@ class AWSCloudFormation(AWSSession):
                         self.resources[idx] = os.path.abspath(
                             os.path.join(os.getcwd(), file))
                     else:
-                        # self.resources[idx] = os.path.abspath(
-                        #     os.path.join(
-                        #         os.getcwd(),
-                        #         './src/main/resources/',
-                        #         file
-                        #     ))
                         self.resources[idx] = self.get_template_abs_path(file)
 
                 if not os.path.isfile(self.resources[idx]):
@@ -220,15 +208,14 @@ class AWSCloudFormation(AWSSession):
         except botocore.exceptions.ClientError as err:
             err_msg = err.response['Error']['Message']
             err_code = err.response['Error']['Code']
-            if (err_msg != "Stack with id {} does not exist".format(
-                    self.stack_name) and
+            if (err_msg != "Stack with id {} does not exist".format(self.stack_name) and
                     err_code != 'ValidationError'):
                 if no_fail:
                     print("Stack with id "
                           "{} does not exist".format(self.stack_name))
                 else:
-                    raise Exception("Stack with id {} does not exist".format(
-                        self.stack_name), sys.exc_info()[2])
+                    raise Exception("Stack with id {} does not exist".format(self.stack_name),
+                                    sys.exc_info()[2])
 
         print("Can't find output parameter %s in stack %s under %s profile" %
               (output_key, self.stack_name, self.profile_name))
@@ -257,8 +244,7 @@ class AWSCloudFormation(AWSSession):
                 extra_args={'ACL': 'bucket-owner-full-control'}
             )
 
-            template_url = "https://s3.amazonaws.com/%s/%s" % (
-                self.s3_bucket, temp_filename)
+            template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, temp_filename)
             print("Validating template %s" % template_url)
             resp = self.client('cloudformation').validate_template(
                 TemplateURL=template_url
@@ -284,8 +270,7 @@ class AWSCloudFormation(AWSSession):
         if 'stack_name' in kwargs:
             stack_name = kwargs.get('stack_name')
 
-        template_url = "https://s3.amazonaws.com/%s/%s" % (
-            self.s3_bucket, self.s3_key)
+        template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, self.s3_key)
         print("Creating stack {}".format(stack_name))
         resp = cloudformation.create_stack(
             StackName=stack_name,
@@ -312,21 +297,75 @@ class AWSCloudFormation(AWSSession):
         if 'stack_name' in kwargs:
             stack_name = kwargs.get('stack_name')
 
-        template_url = "https://s3.amazonaws.com/%s/%s" % (
-            self.s3_bucket, self.s3_key)
+        template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, self.s3_key)
         print("Updating stack {}".format(stack_name))
+        # print('SNS Arn:{}'.format('arn:aws:sns:us-east-1:973457842829:test'))
         resp = cloudformation.update_stack(
             StackName=stack_name,
             TemplateURL=template_url,
             Capabilities=['CAPABILITY_NAMED_IAM'],
-            Parameters=self._join_parameters(
-                self.parameters, kwargs.get('parameters', None))
+            Parameters=self._join_parameters(self.parameters, kwargs.get('parameters', None)),
+            # NotificationARNs=[
+            #   'arn:aws:sns:us-east-1:973457842829:test'
+            # ]
         )
 
         waiter = cloudformation.get_waiter('stack_update_complete')
         waiter.wait(
             StackName=resp['StackId']
         )
+
+        return
+
+    def deploy(self, **kwargs):
+        self._upload()
+
+        cloudformation = self.client('cloudformation')
+
+        stack_name = self.stack_name
+        if 'stack_name' in kwargs:
+            stack_name = kwargs.get('stack_name')
+
+        if self.exists():
+            changeset_type = 'CREATE'
+        else:
+            changeset_type = 'UPDATE'
+
+        changeset_name = '{stack_name}-{timestamp}'.format(
+                stack_name=stack_name,
+                timestamp=datetime.today().strftime('%Y%m%d%H%M%S%f')
+            )
+
+        template_url = "https://s3.amazonaws.com/%s/%s" % (self.s3_bucket, self.s3_key)
+        print("Creating change set {}".format(stack_name))
+        resp = cloudformation.create_change_set(
+            StackName=stack_name,
+            ChangeSetName=changeset_name,
+            TemplateURL=template_url,
+            Capabilities=['CAPABILITY_NAMED_IAM'],
+            Parameters=self._join_parameters(
+                self.parameters, kwargs.get('parameters', None))
+        )
+
+        waiter = cloudformation.get_waiter('change_set_create_complete')
+        waiter.wait(
+            StackName=resp['StackId'],
+            ChangeSetName=resp['Id']
+        )
+
+        cloudformation.execute_change_set(
+            StackName=resp['StackId'],
+            ChangeSetName=changeset_name
+          )
+
+        # if changeset_type == "CREATE":
+        #     waiter = cloudformation.get_waiter("stack_create_complete")
+        # elif changeset_type == "UPDATE":
+        #     waiter = cloudformation.get_waiter("stack_update_complete")
+
+        # waiter.wait(
+        #     StackName=resp['StackId'],
+        # )
 
         return
 
