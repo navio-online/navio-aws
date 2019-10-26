@@ -206,7 +206,7 @@ class AWSCloudFormation(AWSSession):
         if kwargs:
             no_fail = kwargs.get('no_fail', False)
             no_cache = kwargs.get('no_cache', False)
-            print_out = kwargs.get('print', False)
+            print_out = kwargs.get('print_out', False)
 
         stack_outputs = None
         nextToken = None
@@ -387,7 +387,7 @@ class AWSCloudFormation(AWSSession):
 
         self._print_events(stack_id, stack_name, timestamp)
 
-        self.outputs(no_cache=True, print=True)
+        self.outputs(no_cache=True, print_out=True)
 
         return
 
@@ -414,7 +414,7 @@ class AWSCloudFormation(AWSSession):
 
         self._print_events(resp['StackId'], stack_name, timestamp)
 
-        self.outputs(no_cache=True, print=True)
+        self.outputs(no_cache=True, print_out=True)
 
         return
 
