@@ -1,15 +1,5 @@
-import boto3
-import botocore
-import os
-import uuid
-import fnmatch
-import re
-import sh
-import mimetypes
-import copy
 import uuid
 from navio.aws.services._session import AWSSession
-from concurrent import futures
 
 
 class AWSCloudFront(AWSSession):

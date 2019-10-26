@@ -1,7 +1,6 @@
 import boto3
 import uuid
 from navio.aws.services._session import AWSSession
-from navio.aws._common import dump
 
 
 class AWSACM(AWSSession):
@@ -22,9 +21,7 @@ class AWSACM(AWSSession):
 
         paginator = client.get_paginator('list_certificates')
 
-        page_iterator = paginator.paginate(
-            CertificateStatuses=['ISSUED']
-          )
+        page_iterator = paginator.paginate(CertificateStatuses=['ISSUED'])
         for page in page_iterator:
             if 'CertificateSummaryList' in page:
                 for cert in page['CertificateSummaryList']:

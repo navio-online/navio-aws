@@ -1,7 +1,3 @@
-import boto3
-import botocore
-import os
-import uuid
 import json
 from navio.aws.services._session import AWSSession
 from navio.aws._common import json_serial

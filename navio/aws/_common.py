@@ -122,19 +122,19 @@ def generatePassword(**kwargs):
     # put uppercase if any
     if _kwargs.get('upper_count') and _kwargs.get('upper_count') > 0:
         for x in range(0, _kwargs.get('upper_count')):
-            rndUpcaseLetter = random.randint(0, len(upcase_letters)-1)
+            rndUpcaseLetter = random.randint(0, len(upcase_letters) - 1)
             result = replaceIdx(result, rnd.pop(), upcase_letters[
                 rndUpcaseLetter])
 
     if _kwargs.get('digits_count') and _kwargs.get('digits_count') > 0:
         for x in range(0, _kwargs.get('digits_count')):
-            rndDigitIdx = random.randint(0, len(_kwargs.get('digits'))-1)
+            rndDigitIdx = random.randint(0, len(_kwargs.get('digits')) - 1)
             result = replaceIdx(result, rnd.pop(), _kwargs.get('digits')[
                 rndDigitIdx])
 
     if _kwargs.get('symbols_count') and _kwargs.get('symbols_count') > 0:
         for x in range(0, _kwargs.get('symbols_count')):
-            rndSymbolIdx = random.randint(0, len(_kwargs.get('symbols'))-1)
+            rndSymbolIdx = random.randint(0, len(_kwargs.get('symbols')) - 1)
             result = replaceIdx(result, rnd.pop(), _kwargs.get('symbols')[
                 rndSymbolIdx])
 
@@ -142,7 +142,7 @@ def generatePassword(**kwargs):
 
 
 def replaceIdx(s, idx, char):
-    return s[:idx] + char + s[idx+1:]
+    return s[:idx] + char + s[idx + 1:]
 
 
 _pyntexit_registered = False
