@@ -22,5 +22,5 @@ setup(
     ],
     keywords=['framework'],
     description='Amazon AWS boto3 helper libs.',
-    long_description=open('README.rst').read()+'\n'+open('CHANGES.rst').read()
+    long_description=open('README.rst').read() + '\n' + open('CHANGES.rst').read()
 )
