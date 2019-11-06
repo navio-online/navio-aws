@@ -100,7 +100,7 @@ class AWSLambda(AWSSession):
         files = ls(source_dir, '*.py', '*.js')
         print('[ Files ]')
         for name in files:
-            print(name[len(source_dir)+1:])
+            print(name[len(source_dir) + 1:])
 
         shutil.copytree(source_dir, 'target/distrib/',
                         ignore=shutil.ignore_patterns('*.pyc', 'tmp*'))
@@ -257,7 +257,7 @@ class AWSLambda(AWSSession):
 
         sep = resp['Configuration']['Handler'].rfind('.')
         py_file_name = resp['Configuration']['Handler'][:sep]
-        py_method_name = resp['Configuration']['Handler'][sep+1:]
+        py_method_name = resp['Configuration']['Handler'][sep + 1:]
 
         import logging
         logging.basicConfig()
