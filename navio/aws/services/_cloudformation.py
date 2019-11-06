@@ -8,7 +8,7 @@ import re
 import time
 import textwrap
 import threading
-from datetime import datetime, timezone
+from datetime import datetime
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws import shared
@@ -403,7 +403,7 @@ class AWSCloudFormation(AWSSession):
         template_url = "https://s3.amazonaws.com/%s/%s" % (
             self.s3_bucket, self.s3_key)
         print("Updating stack {}".format(stack_name))
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.utcnow()
         resp = cloudformation.update_stack(
             StackName=stack_name,
             TemplateURL=template_url,
@@ -428,7 +428,7 @@ class AWSCloudFormation(AWSSession):
         resp = cloudformation.describe_stacks(StackName=stack_name)
 
         print('Deleting stack {}'.format(stack_name))
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(tz=None)
         cloudformation.delete_stack(
             StackName=resp['Stacks'][0]['StackId']
         )
