@@ -685,6 +685,12 @@ class AWSCloudFormation(AWSSession):
                     for page in resp_iterator:
                         for event in page['StackEvents']:
                             phResId = event.get('PhysicalResourceId', None)
+                            possible_err_msg = '1: {} ({}); 2: {} ({})'.format(
+                                start_ts,
+                                type(start_ts),
+                                event['Timestamp'],
+                                type(event['Timestamp'])
+                            )
                             if event['EventId'] not in stack_data[stack_id]['event_ids_shown'] and \
                                event['Timestamp'] > start_ts:
                                 if 'AWS::CloudFormation::Stack' == event['ResourceType'] and \
@@ -723,6 +729,9 @@ class AWSCloudFormation(AWSSession):
                                 else:
                                     print(out_msg)
 
+                except TypeError as err1:
+                    print(possible_err_msg)
+                    raise Exception(err1)
                 except botocore.exceptions.ClientError as err:
                     err_msg = err.response['Error']['Message']
                     err_code = err.response['Error']['Code']
