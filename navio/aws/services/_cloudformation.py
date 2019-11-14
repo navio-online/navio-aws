@@ -9,6 +9,7 @@ import time
 import textwrap
 import threading
 from datetime import datetime
+from datetime import timedelta, tzinfo
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws import shared
@@ -33,6 +34,24 @@ STATUS_CF_RUN_COMPLETE.extend(STATUS_UPDATE_COMPLETE)
 STATUS_CF_RUN_COMPLETE.extend(STATUS_CREATE_COMPLETE)
 STATUS_CF_RUN_COMPLETE.extend(STATUS_DELETE_COMPLETE)
 STATUS_CF_RUN_COMPLETE.extend(STATUS_ROLLBACK_COMPLETE)
+
+ZERO = timedelta(0)
+
+
+class UTC(tzinfo):
+    """UTC"""
+
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return ZERO
+
+
+utc = UTC()
 
 
 class AWSCloudFormation(AWSSession):
@@ -403,14 +422,47 @@ class AWSCloudFormation(AWSSession):
         template_url = "https://s3.amazonaws.com/%s/%s" % (
             self.s3_bucket, self.s3_key)
         print("Updating stack {}".format(stack_name))
-        timestamp = datetime.utcnow()
-        resp = cloudformation.update_stack(
-            StackName=stack_name,
-            TemplateURL=template_url,
-            Capabilities=['CAPABILITY_NAMED_IAM'],
-            Parameters=self._join_parameters(
-                self.parameters, kwargs.get('parameters', None))
-        )
+        parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
+        timestamp = datetime.now(utc)
+        try:
+            resp = cloudformation.update_stack(
+                StackName=stack_name,
+                TemplateURL=template_url,
+                Capabilities=['CAPABILITY_NAMED_IAM'],
+                Parameters=parameters
+            )
+            respZ = cloudformation.describe_stacks(
+                StackName=resp['StackId']
+            )
+            print('A: {}; B: {}'.format(datetime.now(utc), respZ['Stacks'][0]['LastUpdatedTime']))
+        except botocore.exceptions.ParamValidationError as error:
+            if str(error).startswith("Parameter validation failed:\nInvalid type for parameter"):
+                res = re.search((r'Invalid type for parameter Parameters\[(\d)\].ParameterValue, '
+                                r'value: None, type: (.+), valid types: (.+)'), str(error))
+                param_idx = int(res.group(1))
+                param_type_asis = res.group(2)
+                param_type_tobe = res.group(3)
+
+                print('Validation error:')
+                print('Parameter {param_name} has invalid type/value.'.format(
+                    param_name=parameters[param_idx]['ParameterKey']
+                ))
+                print('Expected: {expected}, Actual: {actual}/{value}'.format(
+                    expected=param_type_tobe,
+                    actual=param_type_asis,
+                    value=parameters[param_idx]['ParameterValue']
+                ))
+                sys.exit(1)
+            else:
+                raise error
+        except botocore.exceptions.ClientError as error:
+            err_msg = error.response['Error']['Message']
+            err_code = error.response['Error']['Code']
+            if err_code == 'ValidationError':
+                print('Validation error: {}'.format(err_msg))
+                sys.exit(1)
+            else:
+                raise error
 
         self._print_events(resp['StackId'], stack_name, timestamp)
 
@@ -428,10 +480,14 @@ class AWSCloudFormation(AWSSession):
         resp = cloudformation.describe_stacks(StackName=stack_name)
 
         print('Deleting stack {}'.format(stack_name))
-        timestamp = datetime.now(tz=None)
+        timestamp = datetime.now(utc)
         cloudformation.delete_stack(
             StackName=resp['Stacks'][0]['StackId']
         )
+        respZ = cloudformation.describe_stacks(
+            StackName=resp['Stacks'][0]['StackId']
+        )
+        print('A: {}; B: {}'.format(datetime.utcnow(), respZ['Stacks'][0]['DeletionTime']))
 
         self._print_events(resp['Stacks'][0]['StackId'], stack_name, timestamp)
 
