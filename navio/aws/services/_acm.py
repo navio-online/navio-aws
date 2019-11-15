@@ -27,14 +27,18 @@ class AWSACM(AWSSession):
                 for cert in page['CertificateSummaryList']:
                     if cert['DomainName'] == kwargs['domain_name']:
                         if cert_arn is not None:
-                            raise Exception('Multiple certificates with same domain name.')
+                            raise Exception(
+                                'Multiple certificates with same domain name. ({}, {})'.format(
+                                    cert_arn, cert['CertificateArn']))
                         else:
                             cert_arn = cert['CertificateArn']
                     cert_details = client.describe_certificate(CertificateArn=cert['CertificateArn'])
                     for san in cert_details['Certificate']['SubjectAlternativeNames']:
                         if san == kwargs['domain_name']:
                             if cert_arn is not None:
-                                raise Exception('Multiple certificates with same domain name.')
+                                raise Exception(
+                                    'Multiple certificates with same domain name. ({}, {})'.format(
+                                        cert_arn, cert['CertificateArn']))
                             else:
                                 cert_arn = cert['CertificateArn']
         return cert_arn
