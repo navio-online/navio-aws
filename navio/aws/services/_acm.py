@@ -1,5 +1,6 @@
 import boto3
 import uuid
+from navio.aws import dump
 from navio.aws.services._session import AWSSession
 
 
@@ -27,6 +28,7 @@ class AWSACM(AWSSession):
                 for cert in page['CertificateSummaryList']:
                     if cert['DomainName'] == kwargs['domain_name']:
                         if cert_arn is not None:
+                            dump(cert)
                             raise Exception(
                                 'Multiple certificates with same domain name. ({}, {})'.format(
                                     cert_arn, cert['CertificateArn']))
@@ -36,6 +38,7 @@ class AWSACM(AWSSession):
                     for san in cert_details['Certificate']['SubjectAlternativeNames']:
                         if san == kwargs['domain_name']:
                             if cert_arn is not None:
+                                dump(cert)
                                 raise Exception(
                                     'Multiple certificates with same domain name. ({}, {})'.format(
                                         cert_arn, cert['CertificateArn']))
