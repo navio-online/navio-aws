@@ -1,5 +1,6 @@
 from setuptools import setup
 import navio.meta_aws
+
 setup(
     name='navio-aws',
     version=navio.meta_aws.__version__,
@@ -22,5 +23,9 @@ setup(
     ],
     keywords=['framework'],
     description='Amazon AWS boto3 helper libs.',
-    long_description=open('README.rst').read() + '\n' + open('CHANGES.rst').read()
+    long_description="{}\n{}".format(
+        open("README.md", 'rb').read().decode('utf-8'),
+        open("CHANGES.md", 'rb').read().decode('utf-8')
+    ),
+    long_description_content_type='text/markdown'
 )
