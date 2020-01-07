@@ -700,10 +700,11 @@ class AWSCloudFormation(AWSSession):
 
             result = list()
             for key in result_d:
-                result.append({
-                    'ParameterKey': key,
-                    'ParameterValue': result_d[key]
-                })
+                if result_d[key] not None:
+                    result.append({
+                        'ParameterKey': key,
+                        'ParameterValue': result_d[key]
+                    })
             return result
         else:
             return list()
