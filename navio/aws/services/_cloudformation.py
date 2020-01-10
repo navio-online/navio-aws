@@ -221,10 +221,12 @@ class AWSCloudFormation(AWSSession):
 
         no_fail = False
         no_cache = False
+        default = None
         print_out = False
         if kwargs:
             no_fail = kwargs.get('no_fail', False)
             no_cache = kwargs.get('no_cache', False)
+            default = kwargs.get('default', None)
             print_out = kwargs.get('print_out', False)
 
         stack_outputs = None
@@ -270,6 +272,10 @@ class AWSCloudFormation(AWSSession):
             for output in stack_outputs:
                 if output['OutputKey'] == output_key:
                     return output['OutputValue']
+
+            if default:
+                return default
+
             print("AWSCloudFormation.output(): " +
                   "Can't find output parameter {} in stack {} under {} profile".format(
                       output_key,
@@ -298,6 +304,10 @@ class AWSCloudFormation(AWSSession):
         for output in stack_outputs:
             if output['OutputKey'] == output_key:
                 return output['OutputValue']
+
+        default = kwargs.get('default', None)
+        if default:
+            return default
 
         print("Can't find output parameter {} in stack {} under {} profile".format(
             output_key,
