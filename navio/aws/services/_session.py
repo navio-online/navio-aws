@@ -1,5 +1,6 @@
 import boto3
 import threading
+from botocore.config import Config
 
 
 class AWSSession(object):
@@ -19,7 +20,6 @@ class AWSSession(object):
         )
 
         if session_key not in sessions:
-            # print("[{}] session.Session(): key={}".format(threading.get_ident(), session_key))
             if self.profile_name in boto3.session.Session().available_profiles:
                 if self.region_name:
                     sessions[session_key] = boto3.session.Session(
@@ -35,7 +35,12 @@ class AWSSession(object):
         return sessions[session_key]
 
     def client(self, name):
-        return self.__session().client(name)
+        config = Config(
+            retries=dict(
+                max_attempts=20
+            )
+        )
+        return self.__session().client(name, config=config)
 
     def resource(self, name):
         return self.__session().resource(name)
