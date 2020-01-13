@@ -2,15 +2,19 @@ import boto3
 import threading
 from botocore.config import Config
 
+local_cache = threading.local()
+
 
 class AWSSession(object):
 
     def __init__(self, profile_name, region_name=None):
         self.profile_name = profile_name
         self.region_name = region_name
-        self._thread_local = threading.local()
-        self._thread_local.boto3_sessions = dict()
-        self._thread_local.cache = dict()
+        self._thread_local = local_cache
+        if 'boto3_sessions' not in local_cache.__dict__:
+            local_cache.boto3_sessions = dict()
+        if 'cache' not in local_cache.__dict__:
+            local_cache.cache = dict()
 
     def __session(self):
         sessions = self._thread_local.boto3_sessions

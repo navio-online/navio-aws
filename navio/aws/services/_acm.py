@@ -20,21 +20,35 @@ class AWSACM(AWSSession):
 
         client = self.client('acm')
 
-        paginator = client.get_paginator('list_certificates')
+        cache_key = 'acm.certificates.{}.{}.{}'.format(
+            self.region_name,
+            self.profile_name,
+            'ISSUED'
+        )
 
-        page_iterator = paginator.paginate(CertificateStatuses=['ISSUED'])
-        for page in page_iterator:
-            if 'CertificateSummaryList' in page:
-                for cert in page['CertificateSummaryList']:
-                    cert_details = client.describe_certificate(CertificateArn=cert['CertificateArn'])
-                    for san in cert_details['Certificate']['SubjectAlternativeNames']:
-                        if san == kwargs['domain_name']:
-                            if cert_arn is not None:
-                                raise Exception(
-                                    'Multiple certificates with same domain name. ({}, {})'.format(
-                                        cert_arn, cert['CertificateArn']))
-                            else:
-                                cert_arn = cert['CertificateArn']
+        certificates_list = self.cache(cache_key)
+        if certificates_list is None:
+            certificates_list = list()
+
+            paginator = client.get_paginator('list_certificates')
+            page_iterator = paginator.paginate(CertificateStatuses=['ISSUED'])
+            for page in page_iterator:
+                if 'CertificateSummaryList' in page:
+                    for cert in page['CertificateSummaryList']:
+                        certificates_list.append(cert)
+
+            self.cache(cache_key, certificates_list)
+
+        for cert in certificates_list:
+            cert_details = client.describe_certificate(CertificateArn=cert['CertificateArn'])
+            for san in cert_details['Certificate']['SubjectAlternativeNames']:
+                if san == kwargs['domain_name']:
+                    if cert_arn is not None:
+                        raise Exception(
+                            'Multiple certificates with same domain name. ({}, {})'.format(
+                                cert_arn, cert['CertificateArn']))
+                    else:
+                        cert_arn = cert['CertificateArn']
         return cert_arn
 
     def request_via_dns(self, **kwargs):
