@@ -666,6 +666,19 @@ class AWSCloudFormation(AWSSession):
 
         return
 
+    def save_parameters(self, **kwargs):
+        print("Saving input parameters to json")
+
+        out_file = kwargs.get('out_file', None)
+        if not out_file:
+            print('Argument out_file should be specified')
+            sys.exit(1)
+
+        parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
+
+        with open(out_file, 'w') as file:
+            file.write(json.dumps(parameters, indent=2))
+
     def _upload(self):
         print("Uploading %s to s3://%s/%s" %
               (self.template, self.s3_bucket, self.s3_key))
