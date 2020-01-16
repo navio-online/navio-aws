@@ -306,7 +306,7 @@ class AWSCloudFormation(AWSSession):
                 return output['OutputValue']
 
         default = kwargs.get('default', None)
-        if default:
+        if default is not None:
             return default
 
         print("Can't find output parameter {} in stack {} under {} profile".format(
