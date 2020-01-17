@@ -364,17 +364,13 @@ class AWSCloudFormation(AWSSession):
 
         cloudformation = self.client('cloudformation')
 
-        stack_name = self.stack_name
-        if 'stack_name' in kwargs:
-            stack_name = kwargs.get('stack_name')
+        stack_name = kwargs.get('stack_name', self.stack_name)
+        role_arn = kwargs.get('role_arn', self.role_arn)
 
-        role_arn = self.role_arn
-        if 'role_arn' in kwargs:
-            role_arn = kwargs.get('role_arn')
+        template_url = "https://s3.amazonaws.com/{}/{}".format(self.s3_bucket, self.s3_key)
 
-        template_url = "https://s3.amazonaws.com/%s/%s" % (
-            self.s3_bucket, self.s3_key)
-        print("Creating stack {}".format(stack_name))
+        role_arn_txt = " using role_arn={}".format(role_arn) if role_arn else ""
+        print("Creating stack {stack_name} in {profile_name}{role_arn_txt}".format(stack_name=stack_name, profile_name=self.profile_name, role_arn_txt=role_arn_txt))
         stack_id = None
         parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
         try:
@@ -434,17 +430,13 @@ class AWSCloudFormation(AWSSession):
 
         cloudformation = self.client('cloudformation')
 
-        stack_name = self.stack_name
-        if 'stack_name' in kwargs:
-            stack_name = kwargs.get('stack_name')
+        stack_name = kwargs.get('stack_name', self.stack_name)
+        role_arn = kwargs.get('role_arn', self.role_arn)
 
-        role_arn = self.role_arn
-        if 'role_arn' in kwargs:
-            role_arn = kwargs.get('role_arn')
+        template_url = "https://s3.amazonaws.com/{}/{}".format(self.s3_bucket, self.s3_key)
 
-        template_url = "https://s3.amazonaws.com/%s/%s" % (
-            self.s3_bucket, self.s3_key)
-        print("Updating stack {}".format(stack_name))
+        role_arn_txt = " using role_arn={}".format(role_arn) if role_arn else ""
+        print("Updating stack {stack_name} in {profile_name}{role_arn_txt}".format(stack_name=stack_name, profile_name=self.profile_name, role_arn_txt=role_arn_txt))
         parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
         timestamp = datetime.now(utc)
         try:
@@ -500,17 +492,13 @@ class AWSCloudFormation(AWSSession):
     def delete(self, **kwargs):
         cloudformation = self.client('cloudformation')
 
-        stack_name = self.stack_name
-        if 'stack_name' in kwargs:
-            stack_name = kwargs.get('stack_name')
-
-        role_arn = self.role_arn
-        if 'role_arn' in kwargs:
-            role_arn = kwargs.get('role_arn')
+        stack_name = kwargs.get('stack_name', self.stack_name)
+        role_arn = kwargs.get('role_arn', self.role_arn)
 
         resp = cloudformation.describe_stacks(StackName=stack_name)
 
-        print('Deleting stack {}'.format(stack_name))
+        role_arn_txt = " using role_arn={}".format(role_arn) if role_arn else ""
+        print("Deleting stack {stack_name} in {profile_name}{role_arn_txt}".format(stack_name=stack_name, profile_name=self.profile_name, role_arn_txt=role_arn_txt))
         timestamp = datetime.now(utc)
 
         args = {
