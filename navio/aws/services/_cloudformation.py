@@ -78,6 +78,7 @@ class AWSCloudFormation(AWSSession):
             self.easy_service = False
 
             self.on_failure = kwargs.get('on_failure', 'DELETE')
+            self.role_arn = kwargs.get('role_arn', None)
 
             if 'template' in kwargs and type(kwargs['template']) == str:
                 self.template = kwargs['template']
@@ -367,19 +368,27 @@ class AWSCloudFormation(AWSSession):
         if 'stack_name' in kwargs:
             stack_name = kwargs.get('stack_name')
 
+        role_arn = self.role_arn
+        if 'role_arn' in kwargs:
+            role_arn = kwargs.get('role_arn')
+
         template_url = "https://s3.amazonaws.com/%s/%s" % (
             self.s3_bucket, self.s3_key)
         print("Creating stack {}".format(stack_name))
         stack_id = None
         parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
         try:
-            resp = cloudformation.create_stack(
-                StackName=stack_name,
-                TemplateURL=template_url,
-                Capabilities=['CAPABILITY_NAMED_IAM'],
-                OnFailure=self.on_failure,
-                Parameters=parameters
-            )
+            args = {
+                'StackName': stack_name,
+                'TemplateURL': template_url,
+                'Capabilities': ['CAPABILITY_NAMED_IAM'],
+                'Parameters': parameters,
+                'OnFailure': self.on_failure
+            }
+            if role_arn:
+                args['RoleARN'] = role_arn
+
+            resp = cloudformation.create_stack(**args)
             resp = cloudformation.describe_stacks(
                 StackName=resp['StackId']
             )
@@ -429,18 +438,26 @@ class AWSCloudFormation(AWSSession):
         if 'stack_name' in kwargs:
             stack_name = kwargs.get('stack_name')
 
+        role_arn = self.role_arn
+        if 'role_arn' in kwargs:
+            role_arn = kwargs.get('role_arn')
+
         template_url = "https://s3.amazonaws.com/%s/%s" % (
             self.s3_bucket, self.s3_key)
         print("Updating stack {}".format(stack_name))
         parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
         timestamp = datetime.now(utc)
         try:
-            resp = cloudformation.update_stack(
-                StackName=stack_name,
-                TemplateURL=template_url,
-                Capabilities=['CAPABILITY_NAMED_IAM'],
-                Parameters=parameters
-            )
+            args = {
+                'StackName': stack_name,
+                'TemplateURL': template_url,
+                'Capabilities': ['CAPABILITY_NAMED_IAM'],
+                'Parameters': parameters
+            }
+            if role_arn:
+                args['RoleARN'] = role_arn
+
+            resp = cloudformation.update_stack(**args)
             respZ = cloudformation.describe_stacks(
                 StackName=resp['StackId']
             )
@@ -487,13 +504,22 @@ class AWSCloudFormation(AWSSession):
         if 'stack_name' in kwargs:
             stack_name = kwargs.get('stack_name')
 
+        role_arn = self.role_arn
+        if 'role_arn' in kwargs:
+            role_arn = kwargs.get('role_arn')
+
         resp = cloudformation.describe_stacks(StackName=stack_name)
 
         print('Deleting stack {}'.format(stack_name))
         timestamp = datetime.now(utc)
-        cloudformation.delete_stack(
-            StackName=resp['Stacks'][0]['StackId']
-        )
+
+        args = {
+            'StackName': resp['Stacks'][0]['StackId']
+        }
+        if role_arn:
+            args['RoleARN'] = role_arn
+
+        cloudformation.delete_stack(**args)
         respZ = cloudformation.describe_stacks(
             StackName=resp['Stacks'][0]['StackId']
         )
