@@ -685,12 +685,17 @@ class AWSCloudFormation(AWSSession):
 
         parameters = self._join_parameters(self.parameters, kwargs.get('parameters', None))
 
+        result = {'Parameters': dict()}
+
+        for param in parameters:
+            result['Parameters'][param.get('ParameterKey')] = param.get('ParameterValue')
+
         out_file = kwargs.get('out_file', None)
         if out_file:
             with open(out_file, 'w') as file:
-                file.write(json.dumps(parameters, indent=2))
+                file.write(json.dumps(result, indent=2))
         else:
-            print(json.dumps(parameters, indent=2))
+            print(json.dumps(result, indent=2))
 
     def _upload(self):
         print("Uploading %s to s3://%s/%s" %
