@@ -8,6 +8,7 @@ import re
 import time
 import textwrap
 import threading
+import operator
 from datetime import datetime
 from datetime import timedelta, tzinfo
 from boto3.s3.transfer import S3Transfer
@@ -197,6 +198,7 @@ class AWSCloudFormation(AWSSession):
 
     def print_outputs(self, **kwargs):
         stack_outputs = self.outputs(**kwargs)
+        stack_outputs.sort(key=operator.itemgetter('OutputKey'))
 
         if len(stack_outputs) == 0:
             print("Stack {} don't have any outputs".format(self.stack_name))
