@@ -513,7 +513,6 @@ class AWSCloudFormation(AWSSession):
         respZ = cloudformation.describe_stacks(
             StackName=resp['Stacks'][0]['StackId']
         )
-        print('A: {}; B: {}'.format(datetime.utcnow(), respZ['Stacks'][0]['DeletionTime']))
 
         self._print_events(resp['Stacks'][0]['StackId'], stack_name, timestamp)
 
