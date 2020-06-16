@@ -25,26 +25,41 @@ class AWSLambda(AWSSession):
 
         self.profile_name = kwargs['profile_name']
         self.function_name = kwargs['function_name']
-        self.language = kwargs.get('language', 'python')
-        self.s3_filename = kwargs['s3_filename']
-        self.pip_requirements = kwargs.get('pip_requirements', None)
-        self.pip_requirements_file = kwargs.get('pip_requirements_file', None)
-        self.npm_requirements = kwargs.get('npm_requirements', None)
-        self.npm_package_json = kwargs.get('npm_package_json', None)
 
-        if self.language not in ['python', 'nodejs']:
-            raise Exception('Unsupportable language: {}'.format(self.language))
+        if (len(kwargs) == 2 and
+                'profile_name' in kwargs and
+                'function_name' in kwargs):
+            # Easy service, for lookups only
+            self.easy_service = True
+        elif (len(kwargs) == 3 and
+              'profile_name' in kwargs and
+              'function_name' in kwargs and
+              'region_name' in kwargs):
+            # Easy service, for lookups only
+            self.easy_service = True
+        else:
+            self.easy_service = False
 
-        url = urlparse(kwargs['s3_uri'])
-        self.s3_bucket = url.netloc
-        self.s3_key = url.path
+            self.language = kwargs.get('language', 'python')
+            self.s3_filename = kwargs['s3_filename']
+            self.pip_requirements = kwargs.get('pip_requirements', None)
+            self.pip_requirements_file = kwargs.get('pip_requirements_file', None)
+            self.npm_requirements = kwargs.get('npm_requirements', None)
+            self.npm_package_json = kwargs.get('npm_package_json', None)
 
-        if self.s3_key.endswith('/'):
-            self.s3_key = "%s%s" % (
-                self.s3_key, os.path.basename(self.s3_filename))
+            if self.language not in ['python', 'nodejs']:
+                raise Exception('Unsupportable language: {}'.format(self.language))
 
-        if self.s3_key.startswith('/'):
-            self.s3_key = self.s3_key[1:]
+            url = urlparse(kwargs['s3_uri'])
+            self.s3_bucket = url.netloc
+            self.s3_key = url.path
+
+            if self.s3_key.endswith('/'):
+                self.s3_key = "%s%s" % (
+                    self.s3_key, os.path.basename(self.s3_filename))
+
+            if self.s3_key.startswith('/'):
+                self.s3_key = self.s3_key[1:]
 
     def validate(self):
         self.install_deps(['--user'])
