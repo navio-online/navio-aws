@@ -3,6 +3,7 @@ import botocore
 import os
 import shutil
 import zipfile
+import json
 from boto3.s3.transfer import S3Transfer
 from navio.aws.services._session import AWSSession
 from navio.aws._common import execute, ls, which, safe_cd
