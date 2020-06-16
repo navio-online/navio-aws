@@ -25,7 +25,6 @@ class AWSLambda(AWSSession):
         ).__init__(kwargs['profile_name'], kwargs.get('region_name', None))
 
         self.profile_name = kwargs['profile_name']
-        self.function_name = kwargs['function_name']
 
         if (len(kwargs) == 1 and
                 'profile_name' in kwargs):
@@ -45,6 +44,7 @@ class AWSLambda(AWSSession):
         else:
             self.easy_service = False
 
+            self.function_name = kwargs['function_name']
             self.language = kwargs.get('language', 'python')
             self.s3_filename = kwargs['s3_filename']
             self.pip_requirements = kwargs.get('pip_requirements', None)
