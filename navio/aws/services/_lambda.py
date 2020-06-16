@@ -26,6 +26,10 @@ class AWSLambda(AWSSession):
         self.profile_name = kwargs['profile_name']
         self.function_name = kwargs['function_name']
 
+        if (len(kwargs) == 1 and
+                'profile_name' in kwargs):
+            # Easy service, for lookups only
+            self.easy_service = True
         if (len(kwargs) == 2 and
                 'profile_name' in kwargs and
                 'function_name' in kwargs):
