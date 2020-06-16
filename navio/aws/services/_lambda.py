@@ -274,3 +274,21 @@ class AWSLambda(AWSSession):
         import importlib
         mod = importlib.import_module(py_file_name)
         result = getattr(mod, py_method_name)(event, {})
+
+    def invoke(self, **kwargs):
+        lambdas = self.client('lambda')
+
+        data = kwargs['data']
+        function_name = kwargs['function_name']
+        qualifier = kwargs.get('qualifier', '$LATEST')
+
+        resp = lambdas.invoke(
+            FunctionName=function_name,
+            Qualifier=qualifier,
+            InvocationType='RequestResponse',
+            Payload=json.dumps(data),
+        )
+
+        data = resp['Payload'].read().decode("utf-8")
+
+        return json.loads(data)
